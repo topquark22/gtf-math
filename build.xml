@@ -1,0 +1,57 @@
+<project name="math" default="build">
+
+  <property name="srcdir" location="src"/>
+  <property name="testdir" value="test"/>
+  <property name="targetdir" value="target"/>
+
+  <path id="compile.classpath">
+    <pathelement location="${targetdir}/classes"/>
+  </path>
+
+  <path id="test.classpath">
+    <path refid="compile.classpath"/>
+    <pathelement location="${targetdir}/testclasses"/>
+  </path>
+
+  <target name="clean">
+    <delete dir="${targetdir}"/>
+  </target>
+
+  <target name="build" depends="compile,compiletests,jar,javadoc"/>
+
+  <target name="compile">
+    <mkdir dir="${targetdir}/classes"/>
+    <javac srcdir="${srcdir}" destdir="${targetdir}/classes"/>
+  </target>
+
+  <target name="compiletests">
+    <mkdir dir="${targetdir}/testclasses"/>
+    <javac srcdir="${testdir}" destdir="${targetdir}/testclasses">
+      <classpath refid="compile.classpath"/>
+    </javac>
+  </target>
+
+  <target name="jar">
+    <jar destfile="${targetdir}/gtf-math.jar" basedir="${targetdir}/classes"/>
+  </target>
+
+  <target name="javadoc">
+    <mkdir dir="${targetdir}/api"/>
+    <javadoc sourcepath="${srcdir}" destdir="${targetdir}/api">
+      <packageset dir="${srcdir}"/>
+    </javadoc>
+  </target>
+
+  <target name="test" depends="compile,compiletests">
+    <java classname="gtf.math.FractionTest">
+      <classpath refid="test.classpath"/>
+    </java>
+    <echo/>
+    <java classname="gtf.math.BigFractionTest">
+      <classpath refid="test.classpath"/>
+      <arg line="5 6"/>
+      <arg line="7 8"/>
+    </java>
+  </target>
+
+</project>
