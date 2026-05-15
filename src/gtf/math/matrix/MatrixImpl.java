@@ -127,12 +127,65 @@ public class MatrixImpl<T, R extends Ring<T>>
 
   @Override
   public T rowReduce(int workingColumns) {
-    // TODO Auto-generated method stub
-    return null;
+    if (workingColumns < 0 || workingColumns > getCols()) {
+      throw new IllegalArgumentException("invalid number of working columns");
+    }
+
+    R ring = getRing();
+    T factorReciprocal = ring.id();
+    int pivotRow = 0;
+
+    for (int col = 0; col < workingColumns && pivotRow < getRows(); col++) {
+      int pivot = findPivot(pivotRow, col);
+      if (pivot < 0) {
+        continue;
+      }
+
+      if (pivot != pivotRow) {
+        swapRows(pivot, pivotRow);
+        factorReciprocal = ring.neg(factorReciprocal);
+      }
+
+      T pivotValue = getCell(pivotRow, col);
+      factorReciprocal = ring.mul(factorReciprocal, pivotValue);
+
+      scalarMultiplyRow(pivotRow, ring.divide(ring.id(), pivotValue));
+
+      for (int row = 0; row < getRows(); row++) {
+        if (row != pivotRow) {
+          T entry = getCell(row, col);
+          if (!isZero(entry)) {
+            addScalarMultiple(pivotRow, row, ring.neg(entry));
+          }
+        }
+      }
+
+      pivotRow++;
+    }
+
+    if (pivotRow < getRows()) {
+      return ring.zero();
+    }
+
+    return factorReciprocal;
   }
 
   public Matrix<T, R> add(Matrix<T, R> arg) {
     return (Matrix<T, R>) super.add(arg);
+  }
+
+  private int findPivot(int startRow, int col) {
+    for (int row = startRow; row < getRows(); row++) {
+      if (!isZero(getCell(row, col))) {
+        return row;
+      }
+    }
+    return -1;
+  }
+
+  private boolean isZero(T value) {
+    T zero = getRing().zero();
+    return zero == null ? value == null : zero.equals(value);
   }
 
   private Matrix<T, R> identityMatrix(int size) {
