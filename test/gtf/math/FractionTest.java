@@ -1,96 +1,96 @@
 package gtf.math;
 
-import java.math.BigInteger;
+import static org.junit.Assert.assertEquals;
 
+import org.junit.Test;
+
+/**
+ * @author gtf
+ */
 public class FractionTest {
 
-  private static final long SIZE = 10000;
-
-  public static void main(String[] args) {
-
-    if (args.length >= 2) {
-      long p1 = Long.parseLong(args[0]);
-      long q1 = Long.parseLong(args[1]);
-      Fraction f1 = new Fraction(p1, q1);
-      doit(f1);
-      if (args.length >= 4) {
-        long p2 = Long.parseLong(args[2]);
-        long q2 = Long.parseLong(args[3]);
-        Fraction f2 = new Fraction(p2, q2);
-        doit2(f1, f2);
-      }
-    } else {
-      Fraction f1 = someFraction(SIZE);
-      Fraction f2 = someFraction(SIZE);
-      doit(f1);
-      doit2(f1, f2);
-    }
-
-    try {
-      Fraction f = new Fraction(someLong(SIZE), 0);
-      System.out.println("Divide by zero test failed");
-    } catch (ArithmeticException e) {
-      System.out.println("Divide by zero test successful");
-    }
-
-    try {
-      Fraction f = someFraction(SIZE);
-      Fraction g = f.divide(Fraction.ZERO);
-      System.out.println("Divide by zero test failed");
-    } catch (ArithmeticException e) {
-      System.out.println("Divide by zero test successful");
-    }
-
-    // test that fraction is reduced
-    Fraction f = someFraction(SIZE);
-    BigInteger p = new BigInteger(new Long(f.getNumerator()).toString());
-    BigInteger q = new BigInteger(new Long(f.getDenominator()).toString());
-    BigInteger gcd = p.gcd(q);
-    if (gcd.equals(BigInteger.ONE)) {
-      System.out.println("GCD test successful");
-    } else {
-      System.out.println("GCD test failed");
-    }
+  @Test
+  public void testReduction() {
+    assertEquals(new Fraction(1, 2), new Fraction(2, 4));
   }
 
-  private static long someLong(long size) {
-    return (long) (Math.random() * 2 * size) - size;
+  @Test
+  public void testNegativeDenominatorNormalization() {
+    assertEquals(new Fraction(-1, 2), new Fraction(1, -2));
+    assertEquals(new Fraction(1, 2), new Fraction(-1, -2));
   }
 
-  private static Fraction someFraction(long size) {
-    long p = someLong(size);
-    long q = 0;
-    while (q == 0) {
-      q = someLong(size);
-    }
-    return new Fraction(p, q);
+  @Test
+  public void testAdd() {
+    Fraction a = new Fraction(1, 2);
+    Fraction b = new Fraction(1, 3);
+
+    assertEquals(new Fraction(5, 6), a.add(b));
   }
 
-  private static String comparisonOperator(Fraction f1, Fraction f2) {
-    switch (f1.compareTo(f2)) {
-      case -1:
-        return "<";
-      case 0:
-        return "==";
-      case 1:
-        return ">";
-    }
-    return "!=";
+  @Test
+  public void testMultiply() {
+    Fraction a = new Fraction(2, 3);
+    Fraction b = new Fraction(3, 5);
+
+    assertEquals(new Fraction(2, 5), a.multiply(b));
   }
 
-  private static void doit(Fraction f) {
-    System.out.println("f = " + f);
-    System.out.println();
-    System.out.println("1/f = " + f.reciprocal());
-    System.out.println("floor(f) = " + f.floor());
-    System.out.println("ceil(f) = " + f.ceil());
-    System.out.println("doubleValue(f) = " + f.doubleValue());
-    System.out.println("floatValue(f) = " + f.floatValue());
+  @Test
+  public void testDivide() {
+    Fraction a = new Fraction(2, 3);
+    Fraction b = new Fraction(4, 5);
+
+    assertEquals(new Fraction(5, 6), a.divide(b));
   }
 
-  private static void doit2(Fraction f1, Fraction f2) {
-    System.out.println(f1 + " + " + f2 + " = " + f1.add(f2));
-    System.out.println(f1 + " * " + f2 + " = " + f1.multiply(f2));
-    System.out.println(f1 + " " + comparisonOperator(f1, f2) + " " + f2);
+  @Test
+  public void testReciprocal() {
+    assertEquals(new Fraction(3, 2), new Fraction(2, 3).reciprocal());
+  }
+
+  @Test
+  public void testCompareTo() {
+    Fraction a = new Fraction(1, 2);
+    Fraction b = new Fraction(2, 3);
+
+    assertEquals(-1, Integer.signum(a.compareTo(b)));
+    assertEquals(1, Integer.signum(b.compareTo(a)));
+    assertEquals(0, a.compareTo(new Fraction(1, 2)));
+  }
+
+  @Test
+  public void testFloor() {
+    assertEquals(2L, new Fraction(7, 3).floor());
+  }
+
+  @Test
+  public void testCeil() {
+    assertEquals(3L, new Fraction(7, 3).ceil());
+  }
+
+  @Test
+  public void testDoubleValue() {
+    assertEquals(0.5, new Fraction(1, 2).doubleValue(), 0.0);
+  }
+
+  @Test
+  public void testFloatValue() {
+    assertEquals(0.5f, new Fraction(1, 2).floatValue(), 0.0f);
+  }
+
+  @Test(expected = ArithmeticException.class)
+  public void testZeroDenominatorRejected() {
+    new Fraction(1, 0);
+  }
+
+  @Test(expected = ArithmeticException.class)
+  public void testDivideByZeroRejected() {
+    new Fraction(1, 2).divide(Fraction.ZERO);
+  }
+
+  @Test(expected = ArithmeticException.class)
+  public void testReciprocalOfZeroRejected() {
+    Fraction.ZERO.reciprocal();
   }
 }
