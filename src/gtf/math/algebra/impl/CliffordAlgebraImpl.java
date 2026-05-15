@@ -10,8 +10,8 @@ import gtf.math.algebra.Multivector;
  * Basic implementation of a finite-dimensional Clifford algebra.
  *
  * <p>
- * This implementation currently provides blade-grade utilities and the
- * exterior (wedge) product.
+ * This implementation currently provides blade-grade utilities, the exterior
+ * (wedge) product, Hodge dual, and the three-dimensional vector cross product.
  * </p>
  *
  * @author gtf
@@ -82,6 +82,44 @@ public class CliffordAlgebraImpl<V, S, F extends Field<S>>
     }
 
     return result;
+  }
+
+  @Override
+  public Multivector<S, F> hodgeDual(Multivector<S, F> a) {
+
+    F field = a.field();
+    int pseudoscalar = (1 << a.dimension()) - 1;
+
+    ArrayMultivector<S, F> result =
+        new ArrayMultivector<S, F>(field, a.dimension());
+
+    for (int blade = 0; blade < a.bladeCount(); blade++) {
+      int dualBlade = pseudoscalar ^ blade;
+
+      S coeff = a.coefficient(blade);
+
+      if (swapParity(blade, dualBlade)) {
+        coeff = field.neg(coeff);
+      }
+
+      result.setCoefficient(dualBlade,
+          field.add(result.coefficient(dualBlade), coeff));
+    }
+
+    return result;
+  }
+
+  @Override
+  public Multivector<S, F> crossProduct(
+      Multivector<S, F> a,
+      Multivector<S, F> b) {
+
+    if (a.dimension() != 3 || b.dimension() != 3) {
+      throw new IllegalArgumentException(
+          "cross product is only defined in dimension 3");
+    }
+
+    return hodgeDual(wedge(a, b));
   }
 
   @Override
