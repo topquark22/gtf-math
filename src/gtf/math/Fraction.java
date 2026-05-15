@@ -5,6 +5,13 @@ import java.io.Serializable;
 /**
  *  Represents an immutable rational number in reduced form.
  *
+ *  <p>
+ *  Arithmetic operations use signed 64-bit integer arithmetic internally.
+ *  Intermediate products and sums may overflow for sufficiently large
+ *  numerators or denominators. For arbitrary-precision rational arithmetic,
+ *  use {@link BigFraction} instead.
+ *  </p>
+ *
  *@author     gtf
  */
 public final class Fraction extends Number implements Comparable<Fraction>, Serializable {
