@@ -216,7 +216,7 @@ public final class Complex implements Serializable {
    *@return    The argument
    */
   public double arg() {
-    return Math.atan(y / x);
+    return Math.atan2(y, x);
   }
 
   /**
