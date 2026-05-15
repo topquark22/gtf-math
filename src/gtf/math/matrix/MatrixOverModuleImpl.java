@@ -43,25 +43,21 @@ public class MatrixOverModuleImpl<T, S, R extends Ring<S>, M extends Module<T, S
 
   /**
    * Catenate another matrix on the right with this matrix.
-   * @return an ArrayMatrix instance.
    */
   @Override
   public MatrixOverModule<T, S, R, M> catenate(MatrixOverModule<T, S, R, M> matrix) {
+    if (matrix == null) {
+      throw new NullPointerException("matrix");
+    }
     if (getRows() != matrix.getRows()) {
       throw new IllegalArgumentException("can't catenate matrix with different number of rows");
     }
     
-    MatrixOverModuleImpl<T, S, R, M> dest = new MatrixOverModuleImpl<T, S, R, M>(ring, module, getRows(), getCols() + matrix.getCols(), storageFactory);
-    int otherCols = matrix.getCols();
-    // FIXME this algorithm sucks for sparse matrices. Use storage model
-    for(int row = 0; row < getRows(); row++) {
-      for (int col = 0; col < getCols(); col++) {
-        dest.setCell(row, col, getCell(row, col));
-      }
-      for (int col = 0; col < otherCols; col++) {
-        dest.setCell(row, getCols() + col, matrix.getCell(row, col));
-      }
-    }
+    MatrixOverModuleImpl<T, S, R, M> dest = new MatrixOverModuleImpl<T, S, R, M>(
+        ring, module, getRows(), getCols() + matrix.getCols(), storageFactory);
+
+    copyCells(this, dest, 0);
+    copyCells(matrix, dest, getCols());
     return dest;
   }
 
@@ -208,6 +204,53 @@ public class MatrixOverModuleImpl<T, S, R extends Ring<S>, M extends Module<T, S
       }
     }
     return dest;
+  }
+
+  private void copyCells(MatrixOverModule<T, S, R, M> source,
+      MatrixOverModule<T, S, R, M> dest, int colOffset) {
+    if (source instanceof MatrixOverModuleImpl) {
+      MatrixOverModuleImpl<T, S, R, M> sourceImpl = (MatrixOverModuleImpl<T, S, R, M>) source;
+      if (sourceImpl.entries instanceof SparseStorageModel) {
+        copyStoredCells(sourceImpl, dest, colOffset);
+        return;
+      }
+    }
+    copyAllCells(source, dest, colOffset);
+  }
+
+  private void copyStoredCells(MatrixOverModuleImpl<T, S, R, M> source,
+      MatrixOverModule<T, S, R, M> dest, int colOffset) {
+    for (int row = source.entries.firstRowStored(); row >= 0;
+        row = source.entries.nextInCol(row, source.entries.firstColStored(row))) {
+      int col = source.entries.firstColStored(row);
+      while (col >= 0) {
+        dest.setCell(row, colOffset + col, source.getCell(row, col));
+        col = source.entries.nextInRow(row, col);
+      }
+      Integer nextRow = nextStoredRow(source.entries, row);
+      if (nextRow == null) {
+        break;
+      }
+      row = nextRow.intValue() - 1;
+    }
+  }
+
+  private Integer nextStoredRow(StorageModel<T> storage, int row) {
+    for (int next = row + 1; next < storage.rows(); next++) {
+      if (storage.firstColStored(next) >= 0) {
+        return Integer.valueOf(next);
+      }
+    }
+    return null;
+  }
+
+  private void copyAllCells(MatrixOverModule<T, S, R, M> source,
+      MatrixOverModule<T, S, R, M> dest, int colOffset) {
+    for (int row = 0; row < source.getRows(); row++) {
+      for (int col = 0; col < source.getCols(); col++) {
+        dest.setCell(row, colOffset + col, source.getCell(row, col));
+      }
+    }
   }
 
   private void validateSubmatrix(int rowStart, int numRows, int colStart, int numCols) {
