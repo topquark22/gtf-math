@@ -1,6 +1,7 @@
 package gtf.math.algebra.impl;
 
 import gtf.math.algebra.InnerProductSpace;
+import gtf.math.algebra.Multivector;
 import gtf.math.algebra.RealField;
 
 
@@ -25,6 +26,30 @@ public class EuclideanSpace
           "dimension must be non-negative");
     }
     this.dimension = dimension;
+  }
+
+  /**
+   * @return the standard Euclidean plane R^2
+   */
+  public static EuclideanSpace r2() {
+    return new EuclideanSpace(2);
+  }
+
+  /**
+   * @return the standard Euclidean space R^3
+   */
+  public static EuclideanSpace r3() {
+    return new EuclideanSpace(3);
+  }
+
+  /**
+   * Returns the standard Euclidean space R^n.
+   *
+   * @param dimension the dimension n
+   * @return R^n
+   */
+  public static EuclideanSpace rn(int dimension) {
+    return new EuclideanSpace(dimension);
   }
 
   @Override
@@ -105,6 +130,52 @@ public class EuclideanSpace
   }
 
   /**
+   * Computes the Euclidean norm of a vector.
+   *
+   * @param vector the vector
+   * @return the Euclidean norm
+   */
+  public double norm(double[] vector) {
+    return Math.sqrt(norm2(vector));
+  }
+
+  /**
+   * Computes the squared Euclidean norm of a vector.
+   *
+   * @param vector the vector
+   * @return the squared Euclidean norm
+   */
+  public double norm2(double[] vector) {
+    validate(vector);
+    return innerProduct(vector, vector);
+  }
+
+  /**
+   * Computes the Euclidean distance between two vectors.
+   *
+   * @param arg1 the first vector
+   * @param arg2 the second vector
+   * @return the Euclidean distance
+   */
+  public double distance(double[] arg1, double[] arg2) {
+    return norm(add(arg1, neg(arg2)));
+  }
+
+  /**
+   * Returns a normalized copy of a non-zero vector.
+   *
+   * @param vector the vector
+   * @return the normalized vector
+   */
+  public double[] normalize(double[] vector) {
+    double n = norm(vector);
+    if (n == 0.0) {
+      throw new ArithmeticException("division by zero");
+    }
+    return mul(1.0 / n, vector);
+  }
+
+  /**
    * Computes the vector cross product in R^3.
    *
    * <p>
@@ -130,6 +201,48 @@ public class EuclideanSpace
         arg1[2] * arg2[0] - arg1[0] * arg2[2],
         arg1[0] * arg2[1] - arg1[1] * arg2[0]
     };
+  }
+
+  /**
+   * Converts an ordinary vector to a grade-1 multivector.
+   *
+   * @param vector the vector
+   * @return the corresponding grade-1 multivector
+   */
+  public Multivector<Double, RealField> toMultivector(double[] vector) {
+    validate(vector);
+
+    ArrayMultivector<Double, RealField> result =
+        new ArrayMultivector<Double, RealField>(RealField.INSTANCE, dimension);
+
+    for (int i = 0; i < dimension; i++) {
+      result.setCoefficient(1 << i, vector[i]);
+    }
+
+    return result;
+  }
+
+  /**
+   * Extracts the grade-1 vector part of a multivector.
+   *
+   * @param multivector the multivector
+   * @return the vector part
+   */
+  public double[] fromMultivector(Multivector<Double, RealField> multivector) {
+    if (multivector == null) {
+      throw new NullPointerException("multivector");
+    }
+    if (multivector.dimension() != dimension) {
+      throw new IllegalArgumentException("dimension mismatch");
+    }
+
+    double[] result = new double[dimension];
+
+    for (int i = 0; i < dimension; i++) {
+      result[i] = multivector.coefficient(1 << i);
+    }
+
+    return result;
   }
 
   private void validate(double[] vector) {
