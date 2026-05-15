@@ -28,8 +28,47 @@ public class MatrixImpl<T, R extends Ring<T>>
 
   @Override
   public T determinant() {
-    // TODO Auto-generated method stub
-    return null;
+    if (!isSquare()) {
+      throw new UnsupportedOperationException("matrix must be square");
+    }
+
+    final int size = getRows();
+    final R ring = getRing();
+
+    if (size == 0) {
+      return ring.id();
+    }
+
+    if (size == 1) {
+      return getCell(0, 0);
+    }
+
+    if (size == 2) {
+      return ring.add(
+          ring.mul(getCell(0, 0), getCell(1, 1)),
+          ring.neg(ring.mul(getCell(0, 1), getCell(1, 0))));
+    }
+
+    T det = ring.zero();
+
+    for (int col = 0; col < size; col++) {
+      T entry = getCell(0, col);
+
+      MatrixOverModule<T, T, R, Module<T, T, R>> minorWithColumn =
+          deleteCol(submatrix(1, size - 1, 0, size), col);
+
+      Matrix<T, R> minor = (Matrix<T, R>) minorWithColumn;
+
+      T term = ring.mul(entry, minor.determinant());
+
+      if ((col & 1) == 1) {
+        term = ring.neg(term);
+      }
+
+      det = ring.add(det, term);
+    }
+
+    return det;
   }
 
   @Override
