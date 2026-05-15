@@ -16,6 +16,13 @@ import gtf.math.algebra.Ring;
 public interface Matrix<T, R extends Ring<T>> extends MatrixOverModule<T, T, R, Module<T, T, R>> {
 
   /**
+   * @return true if the matrix is square
+   */
+  default boolean isSquare() {
+    return getRows() == getCols();
+  }
+
+  /**
    * Multiply two matrices.
    * 
    * @param arg
