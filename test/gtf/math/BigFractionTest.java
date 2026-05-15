@@ -1,35 +1,77 @@
 package gtf.math;
 
+import static org.junit.Assert.assertEquals;
+
 import java.math.BigInteger;
 
+import org.junit.Test;
+
+/**
+ * @author gtf
+ */
 public class BigFractionTest {
 
-  public static void main(String[] args) {
-    
-    if (args.length >= 2) {
-      BigInteger p1 = new BigInteger(args[0]);
-      BigInteger q1 = new BigInteger(args[1]);
-      BigFraction f1 = new BigFraction(p1, q1);
-      doit(f1);
-      if (args.length >= 4) {
-        BigInteger p2 = new BigInteger(args[2]);
-        BigInteger q2 = new BigInteger(args[3]);
-        BigFraction f2 = new BigFraction(p2, q2);
-        doit2(f1, f2);
-      }
-    }
+  @Test
+  public void testReduction() {
+    BigFraction fraction = new BigFraction(
+        BigInteger.valueOf(2),
+        BigInteger.valueOf(4));
+
+    assertEquals(new BigFraction(1, 2), fraction);
   }
 
-  private static void doit(BigFraction f1) {
-    System.out.println("recip(" + f1 + ") = " + f1.reciprocal());
-    System.out.println("floor(" + f1 + ") = " + f1.floor());
-    System.out.println(" ceil(" + f1 + ") = " + f1.ceil());
-    System.out.println("doubleValue(" + f1 + ") = " + f1.doubleValue());
+  @Test
+  public void testAdd() {
+    BigFraction a = new BigFraction(1, 2);
+    BigFraction b = new BigFraction(1, 3);
+
+    assertEquals(new BigFraction(5, 6), a.add(b));
   }
 
-  private static void doit2(BigFraction f1, BigFraction f2) {    
-    System.out.println(f1 + " + " + f2 + " = " + f1.add(f2));
-    System.out.println(f1 + " * " + f2 + " = " + f1.multiply(f2));
-    System.out.println(f1 + " compareTo " + f2 + " = " + f1.compareTo(f2));
+  @Test
+  public void testMultiply() {
+    BigFraction a = new BigFraction(2, 3);
+    BigFraction b = new BigFraction(3, 5);
+
+    assertEquals(new BigFraction(2, 5), a.multiply(b));
+  }
+
+  @Test
+  public void testReciprocal() {
+    BigFraction fraction = new BigFraction(2, 3);
+
+    assertEquals(new BigFraction(3, 2), fraction.reciprocal());
+  }
+
+  @Test
+  public void testCompareTo() {
+    BigFraction a = new BigFraction(1, 2);
+    BigFraction b = new BigFraction(2, 3);
+
+    assertEquals(-1, Integer.signum(a.compareTo(b)));
+    assertEquals(1, Integer.signum(b.compareTo(a)));
+    assertEquals(0, a.compareTo(new BigFraction(1, 2)));
+  }
+
+  @Test
+  public void testFloor() {
+    assertEquals(BigInteger.valueOf(2),
+        new BigFraction(7, 3).floor());
+  }
+
+  @Test
+  public void testCeil() {
+    assertEquals(BigInteger.valueOf(3),
+        new BigFraction(7, 3).ceil());
+  }
+
+  @Test(expected = ArithmeticException.class)
+  public void testZeroDenominatorRejected() {
+    new BigFraction(BigInteger.ONE, BigInteger.ZERO);
+  }
+
+  @Test(expected = ArithmeticException.class)
+  public void testReciprocalOfZeroRejected() {
+    new BigFraction(0, 1).reciprocal();
   }
 }
