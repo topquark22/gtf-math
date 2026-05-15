@@ -1,7 +1,6 @@
 package gtf.math.algebra.field;
 
 import gtf.math.Complex;
-import gtf.math.algebra.ComplexField;
 import gtf.math.algebra.Field;
 
 
@@ -14,8 +13,6 @@ public final class C implements Field<Complex> {
 
   public static final C INSTANCE = new C();
 
-  private final ComplexField delegate = ComplexField.INSTANCE;
-
   private C() {
   }
 
@@ -26,36 +23,42 @@ public final class C implements Field<Complex> {
 
   @Override
   public Complex zero() {
-    return delegate.zero();
+    return Complex.ZERO;
   }
 
   @Override
   public Complex id() {
-    return delegate.id();
+    return Complex.ONE;
   }
 
   @Override
   public Complex add(Complex arg1, Complex arg2) {
-    return delegate.add(arg1, arg2);
+    return arg1.add(arg2);
   }
 
   @Override
   public Complex neg(Complex arg) {
-    return delegate.neg(arg);
+    return arg.multiply(-1.0);
   }
 
   @Override
   public Complex mul(Complex arg1, Complex arg2) {
-    return delegate.mul(arg1, arg2);
+    return arg1.multiply(arg2);
   }
 
   @Override
   public Complex inv(Complex arg) {
-    return delegate.inv(arg);
+    if (arg.equals(Complex.ZERO)) {
+      throw new ArithmeticException("division by zero");
+    }
+    return arg.recip();
   }
 
   @Override
   public Complex divide(Complex numerator, Complex denominator) {
-    return delegate.divide(numerator, denominator);
+    if (denominator.equals(Complex.ZERO)) {
+      throw new ArithmeticException("division by zero");
+    }
+    return numerator.multiply(denominator.recip());
   }
 }
