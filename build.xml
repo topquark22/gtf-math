@@ -43,15 +43,17 @@
   </target>
 
   <target name="test" depends="compile,compiletests">
-    <java classname="gtf.math.FractionTest">
+    <junit printsummary="yes" haltonfailure="yes">
       <classpath refid="test.classpath"/>
-    </java>
-    <echo/>
-    <java classname="gtf.math.BigFractionTest">
-      <classpath refid="test.classpath"/>
-      <arg line="5 6"/>
-      <arg line="7 8"/>
-    </java>
+
+      <batchtest>
+        <fileset dir="${targetdir}/testclasses">
+          <include name="**/*Test.class"/>
+        </fileset>
+      </batchtest>
+
+      <formatter type="plain"/>
+    </junit>
   </target>
 
 </project>
