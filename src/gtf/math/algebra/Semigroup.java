@@ -2,22 +2,8 @@ package gtf.math.algebra;
 
 
 /**
- * Defines operations on an abstract semigroup, written multiplicatively.
- * 
- * @param <T> The type used for the semigroup elements. Must have a meaningful
- * equals(), hashCode() methods.
- * 
- * @author gtf
+ * @deprecated Use {@link gtf.math.group.Semigroup} instead.
  */
-public interface Semigroup<T> {
-
-  /**
-   * Returns the group operation on a pair of elements.
-   * 
-   * @param arg1
-   * @param arg2
-   * @return the group product of 2 elements
-   */
-  T mul(T arg1, T arg2);
-
+@Deprecated
+public interface Semigroup<T> extends gtf.math.group.Semigroup<T> {
 }
