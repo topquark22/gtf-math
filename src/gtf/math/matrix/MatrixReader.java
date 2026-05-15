@@ -81,7 +81,7 @@ class MatrixReader {
           new ArrayStorageFactory<BigFraction>());
 
       int row = 0;
-      String line = reader.readLine();
+      line = reader.readLine();
 
       while (row < rows && line != null) {
         StringTokenizer tokenizer = new StringTokenizer(line);
