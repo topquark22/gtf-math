@@ -3,6 +3,7 @@
   <property name="srcdir" location="src"/>
   <property name="testdir" value="test"/>
   <property name="targetdir" value="target"/>
+  <property name="test.package" value="**"/>
 
   <path id="compile.classpath">
     <pathelement location="${targetdir}/classes"/>
@@ -58,7 +59,7 @@
 
       <batchtest>
         <fileset dir="${targetdir}/testclasses">
-          <include name="**/*Test.class"/>
+          <include name="${test.package}/**/*Test.class"/>
         </fileset>
       </batchtest>
 
