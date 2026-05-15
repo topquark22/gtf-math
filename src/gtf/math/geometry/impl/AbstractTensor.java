@@ -1,5 +1,8 @@
 package gtf.math.geometry.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import gtf.math.algebra.Field;
 import gtf.math.algebra.FiniteDimensionalVectorSpace;
 import gtf.math.geometry.Tensor;
@@ -59,10 +62,11 @@ public abstract class AbstractTensor<S, F extends Field<S>>
   public Tensor<S, F> add(Tensor<S, F> arg) {
     validateCompatible(arg);
 
-    Object[] components = new Object[size()];
+    List<S> components = new ArrayList<S>(size());
 
-    for (int offset = 0; offset < components.length; offset++) {
-      components[offset] = field().add(componentAt(offset), componentAt(arg, offset));
+    for (int offset = 0; offset < size(); offset++) {
+      components.add(
+          field().add(componentAt(offset), componentAt(arg, offset)));
     }
 
     return create(components);
@@ -70,10 +74,10 @@ public abstract class AbstractTensor<S, F extends Field<S>>
 
   @Override
   public Tensor<S, F> neg() {
-    Object[] components = new Object[size()];
+    List<S> components = new ArrayList<S>(size());
 
-    for (int offset = 0; offset < components.length; offset++) {
-      components[offset] = field().neg(componentAt(offset));
+    for (int offset = 0; offset < size(); offset++) {
+      components.add(field().neg(componentAt(offset)));
     }
 
     return create(components);
@@ -81,10 +85,10 @@ public abstract class AbstractTensor<S, F extends Field<S>>
 
   @Override
   public Tensor<S, F> mul(S scalar) {
-    Object[] components = new Object[size()];
+    List<S> components = new ArrayList<S>(size());
 
-    for (int offset = 0; offset < components.length; offset++) {
-      components[offset] = field().mul(scalar, componentAt(offset));
+    for (int offset = 0; offset < size(); offset++) {
+      components.add(field().mul(scalar, componentAt(offset)));
     }
 
     return create(components);
@@ -96,7 +100,7 @@ public abstract class AbstractTensor<S, F extends Field<S>>
    * @param components flattened row-major component values
    * @return the resulting tensor
    */
-  protected abstract Tensor<S, F> create(Object[] components);
+  protected abstract Tensor<S, F> create(List<S> components);
 
   /**
    * Returns one component by flattened row-major offset.
@@ -159,12 +163,7 @@ public abstract class AbstractTensor<S, F extends Field<S>>
     }
   }
 
-  @SuppressWarnings("unchecked")
   private S componentAt(Tensor<S, F> tensor, int offset) {
-    if (tensor instanceof AbstractTensor) {
-      return ((AbstractTensor<S, F>) tensor).componentAt(offset);
-    }
-
     return tensor.component(unflatten(offset));
   }
 }
