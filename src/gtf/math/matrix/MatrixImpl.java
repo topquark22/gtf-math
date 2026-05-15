@@ -40,8 +40,25 @@ public class MatrixImpl<T, R extends Ring<T>>
 
   @Override
   public Matrix<T, R> multiply(Matrix<T, R> arg) {
-    // TODO Auto-generated method stub
-    return null;
+    if (arg == null) {
+      throw new NullPointerException("arg");
+    }
+    if (getCols() != arg.getRows()) {
+      throw new IllegalArgumentException("incompatible dimensions");
+    }
+
+    R ring = getRing();
+    Matrix<T, R> dest = new MatrixImpl<T, R>(ring, getRows(), arg.getCols(), storageFactory);
+    for (int row = 0; row < getRows(); row++) {
+      for (int col = 0; col < arg.getCols(); col++) {
+        T sum = ring.zero();
+        for (int index = 0; index < getCols(); index++) {
+          sum = ring.add(sum, ring.mul(getCell(row, index), arg.getCell(index, col)));
+        }
+        dest.setCell(row, col, sum);
+      }
+    }
+    return dest;
   }
 
   @Override
