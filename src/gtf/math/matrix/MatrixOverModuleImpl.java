@@ -110,14 +110,29 @@ public class MatrixOverModuleImpl<T, S, R extends Ring<S>, M extends Module<T, S
 
   @Override
   public MatrixOverModule<T, S, R, M> submatrix(int rowStart, int numRows, int colStart, int numCols) {
-    // TODO Auto-generated method stub
-    return null;
+    validateSubmatrix(rowStart, numRows, colStart, numCols);
+    MatrixOverModule<T, S, R, M> dest = new MatrixOverModuleImpl<T, S, R, M>(
+        ring, module, numRows, numCols, storageFactory);
+    for (int row = 0; row < numRows; row++) {
+      for (int col = 0; col < numCols; col++) {
+        dest.setCell(row, col, getCell(rowStart + row, colStart + col));
+      }
+    }
+    return dest;
   }
 
   @Override
   public void swapRows(int row1, int row2) {
-    // TODO Auto-generated method stub
-
+    validateRow(row1);
+    validateRow(row2);
+    if (row1 == row2) {
+      return;
+    }
+    for (int col = 0; col < getCols(); col++) {
+      T temp = getCell(row1, col);
+      setCell(row1, col, getCell(row2, col));
+      setCell(row2, col, temp);
+    }
   }
 
   @Override
@@ -134,14 +149,46 @@ public class MatrixOverModuleImpl<T, S, R extends Ring<S>, M extends Module<T, S
 
   @Override
   public MatrixOverModule<T, S, R, M> deleteCol(MatrixOverModule<T, S, R, M> matrix, int col) {
-    // TODO Auto-generated method stub
-    return null;
+    if (matrix == null) {
+      throw new NullPointerException("matrix");
+    }
+    if (col < 0 || col >= matrix.getCols()) {
+      throw new ArrayIndexOutOfBoundsException(col);
+    }
+    MatrixOverModule<T, S, R, M> dest = new MatrixOverModuleImpl<T, S, R, M>(
+        ring, module, matrix.getRows(), matrix.getCols() - 1, storageFactory);
+    for (int row = 0; row < matrix.getRows(); row++) {
+      int destCol = 0;
+      for (int sourceCol = 0; sourceCol < matrix.getCols(); sourceCol++) {
+        if (sourceCol != col) {
+          dest.setCell(row, destCol, matrix.getCell(row, sourceCol));
+          destCol++;
+        }
+      }
+    }
+    return dest;
   }
 
   @Override
   public MatrixOverModule<T, S, R, M> deleteRow(MatrixOverModule<T, S, R, M> matrix, int row) {
-    // TODO Auto-generated method stub
-    return null;
+    if (matrix == null) {
+      throw new NullPointerException("matrix");
+    }
+    if (row < 0 || row >= matrix.getRows()) {
+      throw new ArrayIndexOutOfBoundsException(row);
+    }
+    MatrixOverModule<T, S, R, M> dest = new MatrixOverModuleImpl<T, S, R, M>(
+        ring, module, matrix.getRows() - 1, matrix.getCols(), storageFactory);
+    int destRow = 0;
+    for (int sourceRow = 0; sourceRow < matrix.getRows(); sourceRow++) {
+      if (sourceRow != row) {
+        for (int col = 0; col < matrix.getCols(); col++) {
+          dest.setCell(destRow, col, matrix.getCell(sourceRow, col));
+        }
+        destRow++;
+      }
+    }
+    return dest;
   }
 
   @Override
@@ -157,6 +204,24 @@ public class MatrixOverModuleImpl<T, S, R extends Ring<S>, M extends Module<T, S
       }
     }
     return dest;
+  }
+
+  private void validateSubmatrix(int rowStart, int numRows, int colStart, int numCols) {
+    if (numRows < 0) {
+      throw new NegativeArraySizeException("numRows");
+    }
+    if (numCols < 0) {
+      throw new NegativeArraySizeException("numCols");
+    }
+    if (rowStart < 0 || colStart < 0 || rowStart + numRows > getRows() || colStart + numCols > getCols()) {
+      throw new ArrayIndexOutOfBoundsException("invalid submatrix range");
+    }
+  }
+
+  private void validateRow(int row) {
+    if (row < 0 || row >= getRows()) {
+      throw new ArrayIndexOutOfBoundsException(row);
+    }
   }
 
 }
