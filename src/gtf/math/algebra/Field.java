@@ -21,4 +21,9 @@ public interface Field<T> extends Ring<T> {
    */
   T inv(T arg);
 
+  @Override
+  default T divide(T numerator, T denominator) {
+    return mul(numerator, inv(denominator));
+  }
+
 }
