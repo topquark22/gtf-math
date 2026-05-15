@@ -122,8 +122,14 @@ public class MatrixOverModuleImpl<T, S, R extends Ring<S>, M extends Module<T, S
 
   @Override
   public MatrixOverModule<T, S, R, M> transpose() {
-    // TODO Auto-generated method stub
-    return null;
+    MatrixOverModule<T, S, R, M> dest = new MatrixOverModuleImpl<T, S, R, M>(
+        ring, module, getCols(), getRows(), storageFactory);
+    for (int row = 0; row < getRows(); row++) {
+      for (int col = 0; col < getCols(); col++) {
+        dest.setCell(col, row, getCell(row, col));
+      }
+    }
+    return dest;
   }
 
   @Override
