@@ -1,6 +1,7 @@
 package gtf.math.geometry.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -30,6 +31,24 @@ public final class ArrayTensor<S, F extends Field<S>>
     extends AbstractTensor<S, F> {
 
   private final List<S> components;
+
+  /**
+   * Creates a dense tensor from a flattened row-major component list.
+   *
+   * <p>
+   * The tensor rank is determined by the number of variance arguments.
+   * </p>
+   *
+   * @param vectorSpace the vector space
+   * @param components flattened row-major component values
+   * @param variances the tensor-index variances
+   */
+  public ArrayTensor(
+      FiniteDimensionalVectorSpace<?, S, F> vectorSpace,
+      List<S> components,
+      TensorVariance... variances) {
+    this(vectorSpace, Arrays.asList(variances), components);
+  }
 
   /**
    * Creates a dense tensor from a flattened row-major component list.
