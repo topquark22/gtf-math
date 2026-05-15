@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import gtf.math.Permutation;
 import gtf.math.algebra.Field;
 import gtf.math.algebra.FiniteDimensionalVectorSpace;
 import gtf.math.geometry.Tensor;
@@ -73,6 +74,27 @@ public final class ArrayTensor<S, F extends Field<S>>
     }
 
     return new ArrayTensor<S, F>(vectorSpace(), rank() + arg.rank(), result);
+  }
+
+  @Override
+  public Tensor<S, F> permute(Permutation permutation) {
+    validatePermutation(permutation);
+
+    List<S> result = new ArrayList<S>(size());
+    Permutation inverse = permutation.inverse();
+
+    for (int offset = 0; offset < size(); offset++) {
+      int[] resultIndices = unflatten(rank(), offset);
+      int[] sourceIndices = new int[rank()];
+
+      for (int i = 0; i < rank(); i++) {
+        sourceIndices[i] = resultIndices[inverse.image(i)];
+      }
+
+      result.add(component(sourceIndices));
+    }
+
+    return new ArrayTensor<S, F>(vectorSpace(), rank(), result);
   }
 
   @Override
@@ -160,6 +182,15 @@ public final class ArrayTensor<S, F extends Field<S>>
     }
     if (arg.vectorSpace() != vectorSpace()) {
       throw new IllegalArgumentException("vector space mismatch");
+    }
+  }
+
+  private void validatePermutation(Permutation permutation) {
+    if (permutation == null) {
+      throw new NullPointerException("permutation");
+    }
+    if (permutation.size() != rank()) {
+      throw new IllegalArgumentException("permutation size mismatch");
     }
   }
 
