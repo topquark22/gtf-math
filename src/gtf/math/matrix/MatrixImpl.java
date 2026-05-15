@@ -103,6 +103,15 @@ public class MatrixImpl<T, R extends Ring<T>>
     }
 
     R ring = getRing();
+
+    if (isIdentity()) {
+      return copyOf(arg);
+    }
+
+    if (arg.isIdentity()) {
+      return copyOf(this);
+    }
+
     Matrix<T, R> dest = new MatrixImpl<T, R>(ring, getRows(), arg.getCols(), storageFactory);
     for (int row = 0; row < getRows(); row++) {
       for (int col = 0; col < arg.getCols(); col++) {
@@ -124,6 +133,16 @@ public class MatrixImpl<T, R extends Ring<T>>
 
   public Matrix<T, R> add(Matrix<T, R> arg) {
     return (Matrix<T, R>) super.add(arg);
+  }
+
+  private Matrix<T, R> copyOf(Matrix<T, R> matrix) {
+    Matrix<T, R> copy = new MatrixImpl<T, R>(getRing(), matrix.getRows(), matrix.getCols(), storageFactory);
+    for (int row = 0; row < matrix.getRows(); row++) {
+      for (int col = 0; col < matrix.getCols(); col++) {
+        copy.setCell(row, col, matrix.getCell(row, col));
+      }
+    }
+    return copy;
   }
     
     
