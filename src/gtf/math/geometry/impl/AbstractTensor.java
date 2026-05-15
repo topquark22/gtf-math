@@ -1,11 +1,13 @@
 package gtf.math.geometry.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import gtf.math.algebra.Field;
 import gtf.math.algebra.FiniteDimensionalVectorSpace;
 import gtf.math.geometry.Tensor;
+import gtf.math.geometry.TensorVariance;
 
 
 /**
@@ -26,26 +28,45 @@ public abstract class AbstractTensor<S, F extends Field<S>>
     implements Tensor<S, F> {
 
   private final FiniteDimensionalVectorSpace<?, S, F> vectorSpace;
-  private final int rank;
+  private final List<TensorVariance> variances;
+  private final int contravariantRank;
+  private final int covariantRank;
 
   /**
    * Creates a tensor over a finite-dimensional vector space.
    *
    * @param vectorSpace the vector space
-   * @param rank the tensor rank
+   * @param variances the tensor-index variances
    */
   protected AbstractTensor(
       FiniteDimensionalVectorSpace<?, S, F> vectorSpace,
-      int rank) {
+      List<TensorVariance> variances) {
     if (vectorSpace == null) {
       throw new NullPointerException("vectorSpace");
     }
-    if (rank < 0) {
-      throw new IllegalArgumentException("rank must be non-negative");
+    if (variances == null) {
+      throw new NullPointerException("variances");
+    }
+
+    int contravariant = 0;
+    int covariant = 0;
+
+    for (TensorVariance variance : variances) {
+      if (variance == null) {
+        throw new NullPointerException("variance");
+      }
+      if (variance == TensorVariance.CONTRAVARIANT) {
+        contravariant++;
+      } else {
+        covariant++;
+      }
     }
 
     this.vectorSpace = vectorSpace;
-    this.rank = rank;
+    this.variances = Collections.unmodifiableList(
+        new ArrayList<TensorVariance>(variances));
+    this.contravariantRank = contravariant;
+    this.covariantRank = covariant;
   }
 
   @Override
@@ -55,7 +76,26 @@ public abstract class AbstractTensor<S, F extends Field<S>>
 
   @Override
   public final int rank() {
-    return rank;
+    return variances.size();
+  }
+
+  @Override
+  public final int contravariantRank() {
+    return contravariantRank;
+  }
+
+  @Override
+  public final int covariantRank() {
+    return covariantRank;
+  }
+
+  @Override
+  public final TensorVariance variance(int index) {
+    if (index < 0 || index >= rank()) {
+      throw new ArrayIndexOutOfBoundsException(index);
+    }
+
+    return variances.get(index);
   }
 
   @Override
@@ -95,12 +135,22 @@ public abstract class AbstractTensor<S, F extends Field<S>>
   }
 
   /**
-   * Constructs a tensor with the same vector space and rank as this tensor.
+   * Constructs a tensor with the same vector space, rank, and variance as
+   * this tensor.
    *
    * @param components flattened row-major component values
    * @return the resulting tensor
    */
   protected abstract Tensor<S, F> create(List<S> components);
+
+  /**
+   * Returns the tensor-index variances.
+   *
+   * @return the tensor-index variances
+   */
+  protected final List<TensorVariance> variances() {
+    return variances;
+  }
 
   /**
    * Returns one component by flattened row-major offset.
@@ -118,7 +168,7 @@ public abstract class AbstractTensor<S, F extends Field<S>>
   protected final int size() {
     int result = 1;
 
-    for (int i = 0; i < rank; i++) {
+    for (int i = 0; i < rank(); i++) {
       result *= dimension();
     }
 
@@ -136,9 +186,9 @@ public abstract class AbstractTensor<S, F extends Field<S>>
       throw new ArrayIndexOutOfBoundsException(offset);
     }
 
-    int[] indices = new int[rank];
+    int[] indices = new int[rank()];
 
-    for (int i = rank - 1; i >= 0; i--) {
+    for (int i = rank() - 1; i >= 0; i--) {
       indices[i] = offset % dimension();
       offset /= dimension();
     }
@@ -147,7 +197,7 @@ public abstract class AbstractTensor<S, F extends Field<S>>
   }
 
   /**
-   * Checks that another tensor has the same vector space and rank.
+   * Checks that another tensor has the same vector space, rank, and variance.
    *
    * @param arg the tensor to check
    */
@@ -160,6 +210,11 @@ public abstract class AbstractTensor<S, F extends Field<S>>
     }
     if (arg.rank() != rank()) {
       throw new IllegalArgumentException("rank mismatch");
+    }
+    for (int i = 0; i < rank(); i++) {
+      if (arg.variance(i) != variance(i)) {
+        throw new IllegalArgumentException("variance mismatch");
+      }
     }
   }
 
