@@ -69,12 +69,7 @@ public class MatrixImpl<T, R extends Ring<T>>
 
     for (int col = 0; col < size; col++) {
       T entry = getCell(0, col);
-
-      MatrixOverModule<T, T, R, Module<T, T, R>> minorWithColumn =
-          deleteCol(submatrix(1, size - 1, 0, size), col);
-
-      Matrix<T, R> minor = (Matrix<T, R>) minorWithColumn;
-
+      Matrix<T, R> minor = cofactorSubmatrix(0, col);
       T term = ring.mul(entry, minor.determinant());
 
       if ((col & 1) == 1) {
@@ -172,6 +167,31 @@ public class MatrixImpl<T, R extends Ring<T>>
 
   public Matrix<T, R> add(Matrix<T, R> arg) {
     return (Matrix<T, R>) super.add(arg);
+  }
+
+  private Matrix<T, R> cofactorSubmatrix(int rowToDelete, int colToDelete) {
+    Matrix<T, R> minor = new MatrixImpl<T, R>(
+        getRing(), getRows() - 1, getCols() - 1, storageFactory);
+
+    int destRow = 0;
+    for (int row = 0; row < getRows(); row++) {
+      if (row == rowToDelete) {
+        continue;
+      }
+
+      int destCol = 0;
+      for (int col = 0; col < getCols(); col++) {
+        if (col == colToDelete) {
+          continue;
+        }
+
+        minor.setCell(destRow, destCol, getCell(row, col));
+        destCol++;
+      }
+      destRow++;
+    }
+
+    return minor;
   }
 
   private int findPivot(int startRow, int col) {
