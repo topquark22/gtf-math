@@ -240,17 +240,16 @@ public final class Complex implements Serializable {
   }
 
   /**
-   * Square root of the complex number. Branch cut is
-   * along the positive real axis.
+   * Square root of the complex number using the principal branch.
+   * Branch cut is along the negative real axis.
    *
    *@return    Square root of the complex number
    */
   public Complex sqrt() {
     double r = norm();
-    return new Complex(
-        (y < 0 ? -1 : 1) * Math.sqrt(r + x) / root2,
-        Math.sqrt(r - x) / root2
-        );
+    double real = Math.sqrt(r + x) / root2;
+    double imag = (y < 0 ? -1 : 1) * Math.sqrt(r - x) / root2;
+    return new Complex(real, imag);
   }
 
   /**
