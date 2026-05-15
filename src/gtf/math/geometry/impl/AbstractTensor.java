@@ -35,8 +35,8 @@ public abstract class AbstractTensor<S, F extends Field<S>>
    * @param rank the tensor rank
    */
   protected AbstractTensor(
-      FiniteDimensionalVectorSpace<?, S, F> vectorSpace,
-      int rank) {
+      final FiniteDimensionalVectorSpace<?, S, F> vectorSpace,
+      final int rank) {
     if (vectorSpace == null) {
       throw new NullPointerException("vectorSpace");
     }
@@ -49,20 +49,20 @@ public abstract class AbstractTensor<S, F extends Field<S>>
   }
 
   @Override
-  public FiniteDimensionalVectorSpace<?, S, F> vectorSpace() {
+  public final FiniteDimensionalVectorSpace<?, S, F> vectorSpace() {
     return vectorSpace;
   }
 
   @Override
-  public int rank() {
+  public final int rank() {
     return rank;
   }
 
   @Override
-  public Tensor<S, F> add(Tensor<S, F> arg) {
+  public Tensor<S, F> add(final Tensor<S, F> arg) {
     validateCompatible(arg);
 
-    List<S> components = new ArrayList<S>(size());
+    final List<S> components = new ArrayList<S>(size());
 
     for (int offset = 0; offset < size(); offset++) {
       components.add(
@@ -74,7 +74,7 @@ public abstract class AbstractTensor<S, F extends Field<S>>
 
   @Override
   public Tensor<S, F> neg() {
-    List<S> components = new ArrayList<S>(size());
+    final List<S> components = new ArrayList<S>(size());
 
     for (int offset = 0; offset < size(); offset++) {
       components.add(field().neg(componentAt(offset)));
@@ -84,8 +84,8 @@ public abstract class AbstractTensor<S, F extends Field<S>>
   }
 
   @Override
-  public Tensor<S, F> mul(S scalar) {
-    List<S> components = new ArrayList<S>(size());
+  public Tensor<S, F> mul(final S scalar) {
+    final List<S> components = new ArrayList<S>(size());
 
     for (int offset = 0; offset < size(); offset++) {
       components.add(field().mul(scalar, componentAt(offset)));
@@ -100,7 +100,7 @@ public abstract class AbstractTensor<S, F extends Field<S>>
    * @param components flattened row-major component values
    * @return the resulting tensor
    */
-  protected abstract Tensor<S, F> create(List<S> components);
+  protected abstract Tensor<S, F> create(final List<S> components);
 
   /**
    * Returns one component by flattened row-major offset.
@@ -108,14 +108,14 @@ public abstract class AbstractTensor<S, F extends Field<S>>
    * @param offset the component offset
    * @return the component value
    */
-  protected S componentAt(int offset) {
+  protected final S componentAt(final int offset) {
     return component(unflatten(offset));
   }
 
   /**
    * @return the total number of components
    */
-  protected int size() {
+  protected final int size() {
     int result = 1;
 
     for (int i = 0; i < rank; i++) {
@@ -131,12 +131,12 @@ public abstract class AbstractTensor<S, F extends Field<S>>
    * @param offset the flattened offset
    * @return the corresponding tensor indices
    */
-  protected int[] unflatten(int offset) {
+  protected final int[] unflatten(int offset) {
     if (offset < 0 || offset >= size()) {
       throw new ArrayIndexOutOfBoundsException(offset);
     }
 
-    int[] indices = new int[rank];
+    final int[] indices = new int[rank];
 
     for (int i = rank - 1; i >= 0; i--) {
       indices[i] = offset % dimension();
@@ -151,7 +151,7 @@ public abstract class AbstractTensor<S, F extends Field<S>>
    *
    * @param arg the tensor to check
    */
-  protected void validateCompatible(Tensor<S, F> arg) {
+  protected final void validateCompatible(final Tensor<S, F> arg) {
     if (arg == null) {
       throw new NullPointerException("arg");
     }
@@ -163,7 +163,7 @@ public abstract class AbstractTensor<S, F extends Field<S>>
     }
   }
 
-  private S componentAt(Tensor<S, F> tensor, int offset) {
+  private S componentAt(final Tensor<S, F> tensor, final int offset) {
     return tensor.component(unflatten(offset));
   }
 }
