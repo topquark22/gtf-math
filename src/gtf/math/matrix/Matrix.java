@@ -23,6 +23,14 @@ public interface Matrix<T, R extends Ring<T>> extends MatrixOverModule<T, T, R, 
   }
 
   /**
+   * Computes the trace of the matrix.
+   *
+   * @return the sum of the diagonal entries
+   * @throws UnsupportedOperationException if the matrix is not square
+   */
+  T trace();
+
+  /**
    * Multiply two matrices.
    * 
    * @param arg
