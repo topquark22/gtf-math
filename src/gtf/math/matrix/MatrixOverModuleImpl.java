@@ -29,11 +29,15 @@ public class MatrixOverModuleImpl<T, S, R extends Ring<S>, M extends Module<T, S
 
   @Override
   public void addScalarMultiple(int sourceRow, int destRow, S scalar) {
-    // FIXME this algorithm sucks for sparse matrices. Use storage model
-    for (int col = 0; col < entries.cols(); col++) {
+    validateRow(sourceRow);
+    validateRow(destRow);
+
+    int col = entries.firstColStored(sourceRow);
+    while (col >= 0) {
       T sourceEntry = getCell(sourceRow, col);
       T entry = getCell(destRow, col);
       entries.setCell(destRow, col, module.add(entry, module.mul(scalar, sourceEntry)));
+      col = entries.nextInRow(sourceRow, col);
     }
   }
 
