@@ -72,7 +72,11 @@ public class SparseVector<T, R extends Ring<T>> implements Vector<T, R>, Iterabl
   }
   
   public void set(int index, T value) {
-    elts.put(index, value);
+    if (isZero(value)) {
+      elts.remove(index);
+    } else {
+      elts.put(index, value);
+    }
   }
 
   /**
@@ -131,6 +135,14 @@ public class SparseVector<T, R extends Ring<T>> implements Vector<T, R>, Iterabl
   
   public Vector<T, R> copy() {
     return new SparseVector<T, R>(this);
+  }
+
+  private boolean isZero(T value) {
+    if (value == null) {
+      return true;
+    }
+    T zero = ring.zero();
+    return zero == null ? value == null : zero.equals(value);
   }
   
   /*

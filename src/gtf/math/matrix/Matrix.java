@@ -16,6 +16,50 @@ import gtf.math.algebra.Ring;
 public interface Matrix<T, R extends Ring<T>> extends MatrixOverModule<T, T, R, Module<T, T, R>> {
 
   /**
+   * @return true if the matrix is square
+   */
+  default boolean isSquare() {
+    return getRows() == getCols();
+  }
+
+  /**
+   * @return true if the matrix is the identity matrix
+   */
+  default boolean isIdentity() {
+    if (!isSquare()) {
+      return false;
+    }
+
+    R ring = getRing();
+
+    for (int row = 0; row < getRows(); row++) {
+      for (int col = 0; col < getCols(); col++) {
+        T value = getCell(row, col);
+
+        if (row == col) {
+          if (!ring.id().equals(value)) {
+            return false;
+          }
+        } else {
+          if (!ring.zero().equals(value)) {
+            return false;
+          }
+        }
+      }
+    }
+
+    return true;
+  }
+
+  /**
+   * Computes the trace of the matrix.
+   *
+   * @return the sum of the diagonal entries
+   * @throws UnsupportedOperationException if the matrix is not square
+   */
+  T trace();
+
+  /**
    * Multiply two matrices.
    * 
    * @param arg
