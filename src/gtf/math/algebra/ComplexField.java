@@ -16,6 +16,11 @@ public final class ComplexField implements Field<Complex> {
   }
 
   @Override
+  public ComplexField ring() {
+    return this;
+  }
+
+  @Override
   public Complex zero() {
     return Complex.ZERO;
   }
