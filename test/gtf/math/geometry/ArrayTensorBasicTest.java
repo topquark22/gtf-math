@@ -8,7 +8,6 @@ import org.junit.Test;
 
 import gtf.math.algebra.RealField;
 import gtf.math.geometry.impl.ArrayTensor;
-import gtf.math.geometry.impl.EuclideanSpace;
 
 /**
  * Basic construction and indexing tests for {@link ArrayTensor}.
@@ -21,7 +20,7 @@ public class ArrayTensorBasicTest {
   public void testScalarTensor() {
     Tensor<Double, RealField> tensor =
         new ArrayTensor<Double, RealField>(
-            EuclideanSpace.R3,
+            EuclideanSpace.r3(),
             Arrays.asList(7.0));
 
     assertEquals(0, tensor.rank());
@@ -34,7 +33,7 @@ public class ArrayTensorBasicTest {
   public void testContravariantVector() {
     Tensor<Double, RealField> tensor =
         new ArrayTensor<Double, RealField>(
-            EuclideanSpace.R3,
+            EuclideanSpace.r3(),
             Arrays.asList(1.0, 2.0, 3.0),
             TensorVariance.CONTRAVARIANT);
 
@@ -52,7 +51,7 @@ public class ArrayTensorBasicTest {
   public void testCovariantVector() {
     Tensor<Double, RealField> tensor =
         new ArrayTensor<Double, RealField>(
-            EuclideanSpace.R3,
+            EuclideanSpace.r3(),
             Arrays.asList(4.0, 5.0, 6.0),
             TensorVariance.COVARIANT);
 
