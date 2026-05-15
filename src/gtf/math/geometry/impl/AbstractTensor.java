@@ -59,7 +59,7 @@ public abstract class AbstractTensor<S, F extends Field<S>>
   }
 
   @Override
-  public Tensor<S, F> add(Tensor<S, F> arg) {
+  public final Tensor<S, F> add(Tensor<S, F> arg) {
     validateCompatible(arg);
 
     List<S> components = new ArrayList<S>(size());
@@ -73,7 +73,7 @@ public abstract class AbstractTensor<S, F extends Field<S>>
   }
 
   @Override
-  public Tensor<S, F> neg() {
+  public final Tensor<S, F> neg() {
     List<S> components = new ArrayList<S>(size());
 
     for (int offset = 0; offset < size(); offset++) {
