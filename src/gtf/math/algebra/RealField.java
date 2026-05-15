@@ -14,6 +14,11 @@ public final class RealField implements Field<Double> {
   }
 
   @Override
+  public RealField ring() {
+    return this;
+  }
+
+  @Override
   public Double zero() {
     return 0.0;
   }
