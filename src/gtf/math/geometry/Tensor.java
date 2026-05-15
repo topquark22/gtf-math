@@ -1,6 +1,7 @@
 package gtf.math.geometry;
 
 import gtf.math.algebra.Field;
+import gtf.math.algebra.FiniteDimensionalVectorSpace;
 
 
 /**
@@ -21,14 +22,24 @@ import gtf.math.algebra.Field;
 public interface Tensor<S, F extends Field<S>> {
 
   /**
+   * @return the finite-dimensional vector space over which this tensor is
+   *         defined
+   */
+  FiniteDimensionalVectorSpace<?, S, F> vectorSpace();
+
+  /**
    * @return the scalar field
    */
-  F ring();
+  default F field() {
+    return vectorSpace().ring();
+  }
 
   /**
    * @return the dimension of the underlying vector space
    */
-  int dimension();
+  default int dimension() {
+    return vectorSpace().dimension();
+  }
 
   /**
    * @return the tensor rank, or order
