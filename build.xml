@@ -11,6 +11,10 @@
   <path id="test.classpath">
     <path refid="compile.classpath"/>
     <pathelement location="${targetdir}/testclasses"/>
+
+    <fileset dir="lib">
+      <include name="*.jar"/>
+    </fileset>
   </path>
 
   <target name="clean">
@@ -21,13 +25,19 @@
 
   <target name="compile">
     <mkdir dir="${targetdir}/classes"/>
-    <javac srcdir="${srcdir}" destdir="${targetdir}/classes"/>
+    <javac
+        srcdir="${srcdir}"
+        destdir="${targetdir}/classes"
+        includeantruntime="false"/>
   </target>
 
   <target name="compiletests">
     <mkdir dir="${targetdir}/testclasses"/>
-    <javac srcdir="${testdir}" destdir="${targetdir}/testclasses">
-      <classpath refid="compile.classpath"/>
+    <javac
+        srcdir="${testdir}"
+        destdir="${targetdir}/testclasses"
+        includeantruntime="false">
+      <classpath refid="test.classpath"/>
     </javac>
   </target>
 
