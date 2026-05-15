@@ -8,13 +8,6 @@ import gtf.math.algebra.FiniteDimensionalVectorSpace;
 /**
  * A coordinate tensor over a finite-dimensional vector space.
  *
- * <p>
- * This interface represents the components of a tensor relative to a
- * distinguished basis. It deliberately does not yet distinguish covariant
- * and contravariant indices. That distinction can be layered on later by a
- * richer tensor-space type.
- * </p>
- *
  * @author gtf
  *
  * @param <S> the scalar-field element type
@@ -43,9 +36,27 @@ public interface Tensor<S, F extends Field<S>> {
   }
 
   /**
-   * @return the tensor rank, or order
+   * @return the total tensor rank
    */
   int rank();
+
+  /**
+   * @return the number of contravariant indices
+   */
+  int contravariantRank();
+
+  /**
+   * @return the number of covariant indices
+   */
+  int covariantRank();
+
+  /**
+   * Returns the variance of one tensor index.
+   *
+   * @param index the tensor index
+   * @return the index variance
+   */
+  TensorVariance variance(int index);
 
   /**
    * Returns one tensor component.
@@ -56,7 +67,7 @@ public interface Tensor<S, F extends Field<S>> {
   S component(int... indices);
 
   /**
-   * Adds another tensor of the same dimension and rank.
+   * Adds another tensor of the same dimension, rank, and variance.
    *
    * @param arg the tensor to add
    * @return the sum
@@ -102,9 +113,8 @@ public interface Tensor<S, F extends Field<S>> {
    * Contracts two tensor indices.
    *
    * <p>
-   * Since this is a coordinate tensor without variance annotations, this is
-   * the coordinate trace obtained by setting the two selected indices equal
-   * and summing over that common index.
+   * Ordinary contraction is only defined between one contravariant index and
+   * one covariant index.
    * </p>
    *
    * @param index1 the first tensor index
