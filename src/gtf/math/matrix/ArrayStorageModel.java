@@ -111,7 +111,7 @@ class ArrayStorageModel<T> implements StorageModel<T> {
     if (col == cols - 1) {
       return -1;
     }
-    return 0;
+    return col + 1;
   }
 
   @Override
