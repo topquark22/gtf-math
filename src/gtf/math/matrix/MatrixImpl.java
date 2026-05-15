@@ -27,6 +27,22 @@ public class MatrixImpl<T, R extends Ring<T>>
   }
 
   @Override
+  public T trace() {
+    if (!isSquare()) {
+      throw new UnsupportedOperationException("matrix must be square");
+    }
+
+    R ring = getRing();
+    T trace = ring.zero();
+
+    for (int i = 0; i < getRows(); i++) {
+      trace = ring.add(trace, getCell(i, i));
+    }
+
+    return trace;
+  }
+
+  @Override
   public T determinant() {
     if (!isSquare()) {
       throw new UnsupportedOperationException("matrix must be square");
