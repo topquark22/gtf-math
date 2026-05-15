@@ -18,15 +18,17 @@ public class ArrayTensorTensorProductTest {
 
   @Test
   public void testVectorCovectorTensorProduct() {
+    EuclideanSpace space = EuclideanSpace.r2();
+
     Tensor<Double, RealField> vector =
         new ArrayTensor<Double, RealField>(
-            EuclideanSpace.r2(),
+            space,
             Arrays.asList(1.0, 2.0),
             TensorVariance.CONTRAVARIANT);
 
     Tensor<Double, RealField> covector =
         new ArrayTensor<Double, RealField>(
-            EuclideanSpace.r2(),
+            space,
             Arrays.asList(3.0, 4.0),
             TensorVariance.COVARIANT);
 
