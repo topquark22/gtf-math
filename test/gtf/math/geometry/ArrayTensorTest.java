@@ -84,4 +84,21 @@ public class ArrayTensorTest {
     assertEquals(2.0, result.component(1, 0), 0.0);
     assertEquals(4.0, result.component(1, 1), 0.0);
   }
+
+  @Test
+  public void testContraction() {
+    EuclideanSpace space = EuclideanSpace.r2();
+    Tensor<Double, RealField> vector = new ArrayTensor<Double, RealField>(
+        space, Arrays.asList(1.0, 2.0), TensorVariance.CONTRAVARIANT);
+    Tensor<Double, RealField> covector = new ArrayTensor<Double, RealField>(
+        space, Arrays.asList(3.0, 4.0), TensorVariance.COVARIANT);
+
+    Tensor<Double, RealField> contracted =
+        vector.tensorProduct(covector).contract(0, 1);
+
+    assertEquals(0, contracted.rank());
+    assertEquals(0, contracted.contravariantRank());
+    assertEquals(0, contracted.covariantRank());
+    assertEquals(11.0, contracted.component(), 0.0);
+  }
 }
