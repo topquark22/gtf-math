@@ -54,4 +54,25 @@ public interface CliffordAlgebra<V, S, F extends Field<S>> {
   Multivector<S, F> innerProduct(
       Multivector<S, F> a,
       Multivector<S, F> b);
+
+  /**
+   * Computes the Hodge dual of a multivector relative to the distinguished
+   * oriented orthonormal basis.
+   *
+   * @param a the multivector
+   * @return the Hodge dual
+   */
+  Multivector<S, F> hodgeDual(Multivector<S, F> a);
+
+  /**
+   * Computes the three-dimensional vector cross product as the Hodge dual of
+   * the wedge product.
+   *
+   * @param a the first vector, represented as a grade-1 multivector
+   * @param b the second vector, represented as a grade-1 multivector
+   * @return the cross product, represented as a grade-1 multivector
+   */
+  Multivector<S, F> crossProduct(
+      Multivector<S, F> a,
+      Multivector<S, F> b);
 }
