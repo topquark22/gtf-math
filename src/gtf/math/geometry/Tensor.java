@@ -1,5 +1,6 @@
 package gtf.math.geometry;
 
+import gtf.math.Permutation;
 import gtf.math.algebra.Field;
 import gtf.math.algebra.FiniteDimensionalVectorSpace;
 
@@ -82,6 +83,20 @@ public interface Tensor<S, F extends Field<S>> {
    * @return the tensor product
    */
   Tensor<S, F> tensorProduct(Tensor<S, F> arg);
+
+  /**
+   * Permutes the tensor indices.
+   *
+   * <p>
+   * The permutation describes where each old tensor index moves in the result.
+   * If {@code permutation.image(i) == j}, then old index {@code i} becomes
+   * result index {@code j}.
+   * </p>
+   *
+   * @param permutation the index permutation
+   * @return the permuted tensor
+   */
+  Tensor<S, F> permute(Permutation permutation);
 
   /**
    * Contracts two tensor indices.
