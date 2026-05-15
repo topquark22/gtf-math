@@ -1,6 +1,6 @@
 package gtf.math.geometry;
 
-import gtf.math.algebra.RealField;
+import gtf.math.algebra.field.R;
 import gtf.math.geometry.impl.ArrayMultivector;
 
 
@@ -15,7 +15,7 @@ import gtf.math.geometry.impl.ArrayMultivector;
  * @author gtf
  */
 public class EuclideanSpace
-    implements InnerProductSpace<double[], Double, RealField> {
+    implements InnerProductSpace<double[], Double, R> {
 
   private final int dimension;
 
@@ -52,8 +52,8 @@ public class EuclideanSpace
   }
 
   @Override
-  public RealField ring() {
-    return RealField.INSTANCE;
+  public R ring() {
+    return R.INSTANCE;
   }
 
   @Override
@@ -208,11 +208,11 @@ public class EuclideanSpace
    * @param vector the vector
    * @return the corresponding grade-1 multivector
    */
-  public Multivector<Double, RealField> toMultivector(double[] vector) {
+  public Multivector<Double, R> toMultivector(double[] vector) {
     validate(vector);
 
-    ArrayMultivector<Double, RealField> result =
-        new ArrayMultivector<Double, RealField>(RealField.INSTANCE, dimension);
+    ArrayMultivector<Double, R> result =
+        new ArrayMultivector<Double, R>(R.INSTANCE, dimension);
 
     for (int i = 0; i < dimension; i++) {
       result.setCoefficient(1 << i, vector[i]);
@@ -227,7 +227,7 @@ public class EuclideanSpace
    * @param multivector the multivector
    * @return the vector part
    */
-  public double[] fromMultivector(Multivector<Double, RealField> multivector) {
+  public double[] fromMultivector(Multivector<Double, R> multivector) {
     if (multivector == null) {
       throw new NullPointerException("multivector");
     }
