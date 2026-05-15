@@ -3,10 +3,13 @@ package gtf.math.matrix;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.math.BigInteger;
+
 import org.junit.Test;
 
 import gtf.math.BigFraction;
 import gtf.math.algebra.field.Q;
+import gtf.math.algebra.field.ZmodP;
 
 /**
  * @author gtf
@@ -14,7 +17,9 @@ import gtf.math.algebra.field.Q;
 public class MatrixImplTest {
 
   private static final Q Q_FIELD = new Q();
+  private static final ZmodP F5 = new ZmodP(BigInteger.valueOf(5));
   private static final StorageFactory<BigFraction> STORAGE = new ArrayStorageFactory<BigFraction>();
+  private static final StorageFactory<BigInteger> INTEGER_STORAGE = new ArrayStorageFactory<BigInteger>();
 
   @Test
   public void testTrace() {
@@ -103,6 +108,51 @@ public class MatrixImplTest {
     assertTrue(matrix.inverse().multiply(matrix).isIdentity());
   }
 
+  @Test
+  public void testFiniteFieldDeterminant() {
+    Matrix<BigInteger, ZmodP> matrix = zmod5Matrix(new long[][] {
+        { 1, 2 },
+        { 3, 4 }
+    });
+
+    assertEquals(BigInteger.valueOf(3), matrix.determinant());
+  }
+
+  @Test
+  public void testFiniteFieldInverse2x2() {
+    Matrix<BigInteger, ZmodP> matrix = zmod5Matrix(new long[][] {
+        { 1, 2 },
+        { 3, 4 }
+    });
+
+    Matrix<BigInteger, ZmodP> expected = zmod5Matrix(new long[][] {
+        { 3, 1 },
+        { 4, 2 }
+    });
+
+    assertMatrixEquals(expected, matrix.inverse());
+  }
+
+  @Test
+  public void testFiniteFieldInverseProductIsIdentity() {
+    Matrix<BigInteger, ZmodP> matrix = zmod5Matrix(new long[][] {
+        { 2, 0, 1 },
+        { 1, 1, 0 },
+        { 0, 1, 1 }
+    });
+
+    assertTrue(matrix.multiply(matrix.inverse()).isIdentity());
+    assertTrue(matrix.inverse().multiply(matrix).isIdentity());
+  }
+
+  @Test(expected = ArithmeticException.class)
+  public void testFiniteFieldInverseRejectsSingularMatrix() {
+    zmod5Matrix(new long[][] {
+        { 1, 2 },
+        { 2, 4 }
+    }).inverse();
+  }
+
   @Test(expected = ArithmeticException.class)
   public void testInverseRejectsSingularMatrix() {
     matrix(new long[][] {
@@ -157,8 +207,22 @@ public class MatrixImplTest {
     return matrix;
   }
 
+  private Matrix<BigInteger, ZmodP> zmod5Matrix(long[][] values) {
+    Matrix<BigInteger, ZmodP> matrix = emptyZmod5Matrix(values.length, values[0].length);
+    for (int row = 0; row < values.length; row++) {
+      for (int col = 0; col < values[row].length; col++) {
+        matrix.setCell(row, col, zmod5(values[row][col]));
+      }
+    }
+    return matrix;
+  }
+
   private Matrix<BigFraction, Q> emptyMatrix(int rows, int cols) {
     return new MatrixImpl<BigFraction, Q>(Q_FIELD, rows, cols, STORAGE);
+  }
+
+  private Matrix<BigInteger, ZmodP> emptyZmod5Matrix(int rows, int cols) {
+    return new MatrixImpl<BigInteger, ZmodP>(F5, rows, cols, INTEGER_STORAGE);
   }
 
   private BigFraction fraction(long value) {
@@ -169,8 +233,23 @@ public class MatrixImplTest {
     return new BigFraction(numerator, denominator);
   }
 
+  private BigInteger zmod5(long value) {
+    return BigInteger.valueOf(value).mod(BigInteger.valueOf(5));
+  }
+
   private void assertMatrixEquals(Matrix<BigFraction, Q> expected,
       Matrix<BigFraction, Q> actual) {
+    assertEquals(expected.getRows(), actual.getRows());
+    assertEquals(expected.getCols(), actual.getCols());
+    for (int row = 0; row < expected.getRows(); row++) {
+      for (int col = 0; col < expected.getCols(); col++) {
+        assertEquals(expected.getCell(row, col), actual.getCell(row, col));
+      }
+    }
+  }
+
+  private void assertMatrixEquals(Matrix<BigInteger, ZmodP> expected,
+      Matrix<BigInteger, ZmodP> actual) {
     assertEquals(expected.getRows(), actual.getRows());
     assertEquals(expected.getCols(), actual.getCols());
     for (int row = 0; row < expected.getRows(); row++) {
