@@ -130,7 +130,7 @@ public class MatrixImplTest {
         { 4, 2 }
     });
 
-    assertMatrixEquals(expected, matrix.inverse());
+    assertZmodPMatrixEquals(expected, matrix.inverse());
   }
 
   @Test
@@ -248,7 +248,7 @@ public class MatrixImplTest {
     }
   }
 
-  private void assertMatrixEquals(Matrix<BigInteger, ZmodP> expected,
+  private void assertZmodPMatrixEquals(Matrix<BigInteger, ZmodP> expected,
       Matrix<BigInteger, ZmodP> actual) {
     assertEquals(expected.getRows(), actual.getRows());
     assertEquals(expected.getCols(), actual.getCols());
