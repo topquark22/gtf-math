@@ -1,4 +1,4 @@
-package gtf.math.stats;
+package gtf.math.stats.distribution;
 
 /**
  * Represents a normal (Gaussian) distribution.
@@ -15,12 +15,6 @@ public final class NormalDistribution implements ContinuousDistribution {
 
   private final double sigma;
 
-  /**
-   * Constructs a normal distribution.
-   *
-   * @param mean the mean
-   * @param variance the variance
-   */
   public NormalDistribution(double mean, double variance) {
     if (!(variance > 0.0)) {
       throw new IllegalArgumentException("variance must be positive");
@@ -31,23 +25,14 @@ public final class NormalDistribution implements ContinuousDistribution {
     this.sigma = Math.sqrt(variance);
   }
 
-  /**
-   * Returns the mean.
-   */
   public double mean() {
     return mean;
   }
 
-  /**
-   * Returns the variance.
-   */
   public double variance() {
     return variance;
   }
 
-  /**
-   * Returns the standard deviation.
-   */
   public double standardDeviation() {
     return sigma;
   }
@@ -66,12 +51,6 @@ public final class NormalDistribution implements ContinuousDistribution {
     return 0.5 * (1.0 + erf(z / Math.sqrt(2.0)));
   }
 
-  /**
-   * Returns the inverse cumulative distribution function.
-   *
-   * @param p probability in the interval (0,1)
-   * @return x such that cumulative(x) = p
-   */
   public double inverseCumulative(double p) {
     if (!(p > 0.0 && p < 1.0)) {
       throw new IllegalArgumentException("probability must satisfy 0 < p < 1");
@@ -80,10 +59,6 @@ public final class NormalDistribution implements ContinuousDistribution {
     return mean + sigma * inverseStandardNormal(p);
   }
 
-  /**
-   * Approximation of the error function.
-   * Abramowitz and Stegun 7.1.26.
-   */
   private static double erf(double x) {
     double sign = Math.signum(x);
     x = Math.abs(x);
@@ -99,10 +74,6 @@ public final class NormalDistribution implements ContinuousDistribution {
     return sign * y;
   }
 
-  /**
-   * Rational approximation to the inverse standard normal CDF.
-   * Peter John Acklam's approximation.
-   */
   private static double inverseStandardNormal(double p) {
 
     double[] a = {

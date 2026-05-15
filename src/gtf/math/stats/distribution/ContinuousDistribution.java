@@ -1,4 +1,4 @@
-package gtf.math.stats;
+package gtf.math.stats.distribution;
 
 /**
  * Represents a continuous probability distribution.
