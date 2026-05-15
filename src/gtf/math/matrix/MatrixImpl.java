@@ -5,7 +5,10 @@ import gtf.math.algebra.Ring;
 
 /**
  * Implementation of a matrix over a ring.
- * 
+ * Note that for some operations such as row-reduce and inverse(),
+ * the elements are expected to have a multiplicative inverse. 
+ * If they do not, then an UnsupportedOperationException is thrown.
+ *
  * @author gtf
  *
  * @param <T> The type of the matrix elements
