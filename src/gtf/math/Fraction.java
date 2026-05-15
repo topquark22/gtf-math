@@ -161,6 +161,7 @@ public final class Fraction extends Number implements Comparable<Fraction>, Seri
    *
    *@return    The quotient as a long value
    */
+  @Override
   public long longValue() {
     return p / q;
   }
@@ -172,6 +173,7 @@ public final class Fraction extends Number implements Comparable<Fraction>, Seri
    *
    *@return    The quotient as an int value
    */
+  @Override
   public int intValue() {
     return (int) (p / q);
   }
@@ -181,6 +183,7 @@ public final class Fraction extends Number implements Comparable<Fraction>, Seri
    *
    *@return    The quotient as a float value
    */
+  @Override
   public float floatValue() {
     return (float)p / (float)q;
   }
@@ -190,6 +193,7 @@ public final class Fraction extends Number implements Comparable<Fraction>, Seri
    *
    *@return    The quotient as a double value
    */
+  @Override
   public double doubleValue() {
     return (double)p / (double)q;
   }
@@ -238,6 +242,7 @@ public final class Fraction extends Number implements Comparable<Fraction>, Seri
    *
    *@return    The string representation
    */
+  @Override
   public String toString() {
     if (q == 1) {
       return "" + p;
@@ -256,6 +261,7 @@ public final class Fraction extends Number implements Comparable<Fraction>, Seri
    *        Fraction is numerically greater than the argument Fraction
    *        (signed comparison).
    */
+  @Override
   public int compareTo(Fraction f) {
     if (f == null) {
       throw new NullPointerException("cannot compare Fraction to null");
@@ -272,6 +278,7 @@ public final class Fraction extends Number implements Comparable<Fraction>, Seri
    *@param     obj - the object to compare with.
    *@return    true if the objects are numerically the same; false otherwise.
    */
+  @Override
   public boolean equals(Object obj) {
     if (obj == null || !(obj instanceof Fraction)) {
       return false;
@@ -285,7 +292,8 @@ public final class Fraction extends Number implements Comparable<Fraction>, Seri
    *
    *@return    a hash code for this fraction
    */
+  @Override
   public int hashCode() {
-    return new Long(p).hashCode() ^ new Long(q).hashCode();
+    return Long.hashCode(p) ^ Long.hashCode(q);
   }
 }
