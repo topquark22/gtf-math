@@ -8,6 +8,7 @@ import gtf.math.Permutation;
 import gtf.math.algebra.Field;
 import gtf.math.algebra.FiniteDimensionalVectorSpace;
 import gtf.math.geometry.Tensor;
+import gtf.math.geometry.TensorVariance;
 
 
 /**
@@ -34,14 +35,14 @@ public final class ArrayTensor<S, F extends Field<S>>
    * Creates a dense tensor from a flattened row-major component list.
    *
    * @param vectorSpace the vector space
-   * @param rank the tensor rank
+   * @param variances the tensor-index variances
    * @param components flattened row-major component values
    */
   public ArrayTensor(
       FiniteDimensionalVectorSpace<?, S, F> vectorSpace,
-      int rank,
+      List<TensorVariance> variances,
       List<S> components) {
-    super(vectorSpace, rank);
+    super(vectorSpace, variances);
 
     if (components == null) {
       throw new NullPointerException("components");
@@ -64,6 +65,15 @@ public final class ArrayTensor<S, F extends Field<S>>
     validateTensorProductArgument(arg);
 
     List<S> result = new ArrayList<S>(size() * size(arg.rank()));
+    List<TensorVariance> variances = new ArrayList<TensorVariance>(
+        rank() + arg.rank());
+
+    for (int i = 0; i < rank(); i++) {
+      variances.add(variance(i));
+    }
+    for (int i = 0; i < arg.rank(); i++) {
+      variances.add(arg.variance(i));
+    }
 
     for (int offset1 = 0; offset1 < size(); offset1++) {
       S component1 = components.get(offset1);
@@ -73,7 +83,7 @@ public final class ArrayTensor<S, F extends Field<S>>
       }
     }
 
-    return new ArrayTensor<S, F>(vectorSpace(), rank() + arg.rank(), result);
+    return new ArrayTensor<S, F>(vectorSpace(), variances, result);
   }
 
   @Override
@@ -81,7 +91,15 @@ public final class ArrayTensor<S, F extends Field<S>>
     validatePermutation(permutation);
 
     List<S> result = new ArrayList<S>(size());
+    List<TensorVariance> variances = new ArrayList<TensorVariance>(rank());
     Permutation inverse = permutation.inverse();
+
+    for (int i = 0; i < rank(); i++) {
+      variances.add(null);
+    }
+    for (int i = 0; i < rank(); i++) {
+      variances.set(permutation.image(i), variance(i));
+    }
 
     for (int offset = 0; offset < size(); offset++) {
       int[] resultIndices = unflatten(rank(), offset);
@@ -94,7 +112,7 @@ public final class ArrayTensor<S, F extends Field<S>>
       result.add(component(sourceIndices));
     }
 
-    return new ArrayTensor<S, F>(vectorSpace(), rank(), result);
+    return new ArrayTensor<S, F>(vectorSpace(), variances, result);
   }
 
   @Override
@@ -103,6 +121,14 @@ public final class ArrayTensor<S, F extends Field<S>>
 
     int resultRank = rank() - 2;
     List<S> result = new ArrayList<S>(size(resultRank));
+    List<TensorVariance> variances = new ArrayList<TensorVariance>(
+        resultRank);
+
+    for (int i = 0; i < rank(); i++) {
+      if (i != index1 && i != index2) {
+        variances.add(variance(i));
+      }
+    }
 
     for (int offset = 0; offset < size(resultRank); offset++) {
       int[] resultIndices = unflatten(resultRank, offset);
@@ -116,12 +142,12 @@ public final class ArrayTensor<S, F extends Field<S>>
       result.add(sum);
     }
 
-    return new ArrayTensor<S, F>(vectorSpace(), resultRank, result);
+    return new ArrayTensor<S, F>(vectorSpace(), variances, result);
   }
 
   @Override
   protected Tensor<S, F> create(List<S> components) {
-    return new ArrayTensor<S, F>(vectorSpace(), rank(), components);
+    return new ArrayTensor<S, F>(vectorSpace(), variances(), components);
   }
 
   private int flatten(int... indices) {
@@ -207,6 +233,10 @@ public final class ArrayTensor<S, F extends Field<S>>
     }
     if (index1 == index2) {
       throw new IllegalArgumentException("indices must be distinct");
+    }
+    if (variance(index1) == variance(index2)) {
+      throw new IllegalArgumentException(
+          "contraction requires opposite variance");
     }
   }
 
