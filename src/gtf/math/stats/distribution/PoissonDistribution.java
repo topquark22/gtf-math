@@ -5,7 +5,7 @@ package gtf.math.stats.distribution;
  *
  * @author gtf
  */
-public final class PoissonDistribution {
+public final class PoissonDistribution implements DiscreteDistribution {
 
   private final double lambda;
 
