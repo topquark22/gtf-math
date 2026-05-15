@@ -104,6 +104,34 @@ public class EuclideanSpace
     return vector[index];
   }
 
+  /**
+   * Computes the vector cross product in R^3.
+   *
+   * <p>
+   * This operation is only defined for the three-dimensional Euclidean space.
+   * Conceptually, it is the Hodge dual of the wedge product.
+   * </p>
+   *
+   * @param arg1 the first vector
+   * @param arg2 the second vector
+   * @return the cross product
+   */
+  public double[] crossProduct(double[] arg1, double[] arg2) {
+    if (dimension != 3) {
+      throw new UnsupportedOperationException(
+          "cross product is only defined in dimension 3");
+    }
+
+    validate(arg1);
+    validate(arg2);
+
+    return new double[] {
+        arg1[1] * arg2[2] - arg1[2] * arg2[1],
+        arg1[2] * arg2[0] - arg1[0] * arg2[2],
+        arg1[0] * arg2[1] - arg1[1] * arg2[0]
+    };
+  }
+
   private void validate(double[] vector) {
     if (vector == null) {
       throw new NullPointerException("vector");
