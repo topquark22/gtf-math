@@ -31,14 +31,11 @@ public class MatrixImpl<T, R extends Ring<T>>
     if (!isSquare()) {
       throw new UnsupportedOperationException("matrix must be square");
     }
-
     R ring = getRing();
     T trace = ring.zero();
-
     for (int i = 0; i < getRows(); i++) {
       trace = ring.add(trace, getCell(i, i));
     }
-
     return trace;
   }
 
@@ -47,45 +44,58 @@ public class MatrixImpl<T, R extends Ring<T>>
     if (!isSquare()) {
       throw new UnsupportedOperationException("matrix must be square");
     }
-
     final int size = getRows();
     final R ring = getRing();
-
     if (size == 0) {
       return ring.id();
     }
-
     if (size == 1) {
       return getCell(0, 0);
     }
-
     if (size == 2) {
       return ring.add(
           ring.mul(getCell(0, 0), getCell(1, 1)),
           ring.neg(ring.mul(getCell(0, 1), getCell(1, 0))));
     }
-
     T det = ring.zero();
-
     for (int col = 0; col < size; col++) {
       T entry = getCell(0, col);
       Matrix<T, R> minor = cofactorSubmatrix(0, col);
       T term = ring.mul(entry, minor.determinant());
-
       if ((col & 1) == 1) {
         term = ring.neg(term);
       }
-
       det = ring.add(det, term);
     }
-
     return det;
   }
 
   @Override
   public Matrix<T, R> inverse() {
-    // TODO Auto-generated method stub
-    return null;
+    if (!isSquare()) {
+      throw new UnsupportedOperationException("matrix must be square");
+    }
+    int size = getRows();
+    MatrixImpl<T, R> augmented = new MatrixImpl<T, R>(
+        getRing(), size, 2 * size, storageFactory);
+    Matrix<T, R> identity = identityMatrix(size);
+    for (int row = 0; row < size; row++) {
+      for (int col = 0; col < size; col++) {
+        augmented.setCell(row, col, getCell(row, col));
+        augmented.setCell(row, size + col, identity.getCell(row, col));
+      }
+    }
+    T scale = augmented.rowReduce(size);
+    if (isZero(scale) || !leftHalfIsIdentity(augmented, size)) {
+      throw new ArithmeticException("matrix is not invertible");
+    }
+    Matrix<T, R> inverse = new MatrixImpl<T, R>(getRing(), size, size, storageFactory);
+    for (int row = 0; row < size; row++) {
+      for (int col = 0; col < size; col++) {
+        inverse.setCell(row, col, augmented.getCell(row, size + col));
+      }
+    }
+    return inverse;
   }
 
   @Override
@@ -96,17 +106,13 @@ public class MatrixImpl<T, R extends Ring<T>>
     if (getCols() != arg.getRows()) {
       throw new IllegalArgumentException("incompatible dimensions");
     }
-
     R ring = getRing();
-
     if (isIdentity()) {
       return copyOf(arg);
     }
-
     if (arg.isIdentity()) {
       return copyOf(this);
     }
-
     Matrix<T, R> dest = new MatrixImpl<T, R>(ring, getRows(), arg.getCols(), storageFactory);
     for (int row = 0; row < getRows(); row++) {
       for (int col = 0; col < arg.getCols(); col++) {
@@ -125,27 +131,21 @@ public class MatrixImpl<T, R extends Ring<T>>
     if (workingColumns < 0 || workingColumns > getCols()) {
       throw new IllegalArgumentException("invalid number of working columns");
     }
-
     R ring = getRing();
     T factorReciprocal = ring.id();
     int pivotRow = 0;
-
     for (int col = 0; col < workingColumns && pivotRow < getRows(); col++) {
       int pivot = findPivot(pivotRow, col);
       if (pivot < 0) {
         continue;
       }
-
       if (pivot != pivotRow) {
         swapRows(pivot, pivotRow);
         factorReciprocal = ring.neg(factorReciprocal);
       }
-
       T pivotValue = getCell(pivotRow, col);
       factorReciprocal = ring.mul(factorReciprocal, pivotValue);
-
       scalarMultiplyRow(pivotRow, ring.divide(ring.id(), pivotValue));
-
       for (int row = 0; row < getRows(); row++) {
         if (row != pivotRow) {
           T entry = getCell(row, col);
@@ -154,14 +154,11 @@ public class MatrixImpl<T, R extends Ring<T>>
           }
         }
       }
-
       pivotRow++;
     }
-
     if (pivotRow < getRows()) {
       return ring.zero();
     }
-
     return factorReciprocal;
   }
 
@@ -172,25 +169,21 @@ public class MatrixImpl<T, R extends Ring<T>>
   private Matrix<T, R> cofactorSubmatrix(int rowToDelete, int colToDelete) {
     Matrix<T, R> minor = new MatrixImpl<T, R>(
         getRing(), getRows() - 1, getCols() - 1, storageFactory);
-
     int destRow = 0;
     for (int row = 0; row < getRows(); row++) {
       if (row == rowToDelete) {
         continue;
       }
-
       int destCol = 0;
       for (int col = 0; col < getCols(); col++) {
         if (col == colToDelete) {
           continue;
         }
-
         minor.setCell(destRow, destCol, getCell(row, col));
         destCol++;
       }
       destRow++;
     }
-
     return minor;
   }
 
@@ -201,6 +194,19 @@ public class MatrixImpl<T, R extends Ring<T>>
       }
     }
     return -1;
+  }
+
+  private boolean leftHalfIsIdentity(Matrix<T, R> matrix, int size) {
+    R ring = getRing();
+    for (int row = 0; row < size; row++) {
+      for (int col = 0; col < size; col++) {
+        T expected = row == col ? ring.id() : ring.zero();
+        if (!expected.equals(matrix.getCell(row, col))) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 
   private boolean isZero(T value) {
@@ -226,6 +232,4 @@ public class MatrixImpl<T, R extends Ring<T>>
     }
     return copy;
   }
-    
-    
 }
