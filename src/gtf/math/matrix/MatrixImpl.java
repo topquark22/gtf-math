@@ -135,6 +135,15 @@ public class MatrixImpl<T, R extends Ring<T>>
     return (Matrix<T, R>) super.add(arg);
   }
 
+  private Matrix<T, R> identityMatrix(int size) {
+    Matrix<T, R> identity = new MatrixImpl<T, R>(getRing(), size, size, storageFactory);
+    T one = getRing().id();
+    for (int i = 0; i < size; i++) {
+      identity.setCell(i, i, one);
+    }
+    return identity;
+  }
+
   private Matrix<T, R> copyOf(Matrix<T, R> matrix) {
     Matrix<T, R> copy = new MatrixImpl<T, R>(getRing(), matrix.getRows(), matrix.getCols(), storageFactory);
     for (int row = 0; row < matrix.getRows(); row++) {
