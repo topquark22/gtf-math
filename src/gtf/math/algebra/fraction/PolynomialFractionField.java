@@ -38,12 +38,48 @@ public class PolynomialFractionField<T,
     numerator = ring.divide(numerator, gcd);
     denominator = ring.divide(denominator, gcd);
 
+    T leadingCoefficient = denominator.leadingCoefficient();
     denominator = ring.monic(denominator);
-
     numerator = ring.scalarMultiply(
-        denominator.leadingCoefficient(),
+        ring.field().inv(leadingCoefficient),
         numerator);
 
     return new Fraction<Polynomial<T>>(numerator, denominator);
+  }
+
+  @Override
+  public Fraction<Polynomial<T>> add(Fraction<Polynomial<T>> left,
+                                     Fraction<Polynomial<T>> right) {
+
+    Polynomial<T> numerator = ring.add(
+        ring.mul(left.numerator(), right.denominator()),
+        ring.mul(right.numerator(), left.denominator()));
+
+    Polynomial<T> denominator = ring.mul(
+        left.denominator(),
+        right.denominator());
+
+    return fraction(numerator, denominator);
+  }
+
+  @Override
+  public Fraction<Polynomial<T>> mul(Fraction<Polynomial<T>> left,
+                                     Fraction<Polynomial<T>> right) {
+
+    return fraction(
+        ring.mul(left.numerator(), right.numerator()),
+        ring.mul(left.denominator(), right.denominator()));
+  }
+
+  @Override
+  public Fraction<Polynomial<T>> neg(Fraction<Polynomial<T>> arg) {
+    return fraction(
+        ring.neg(arg.numerator()),
+        arg.denominator());
+  }
+
+  @Override
+  public Fraction<Polynomial<T>> inv(Fraction<Polynomial<T>> arg) {
+    return fraction(arg.denominator(), arg.numerator());
   }
 }
