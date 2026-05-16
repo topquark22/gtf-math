@@ -25,7 +25,41 @@ public class MatrixRing<T, R extends Ring<T>>
   private final int size;
   private final StorageFactory<T> storageFactory;
 
-  public MatrixRing(
+  /**
+   * Creates a ring of dense {@code n x n} matrices over the given base ring.
+   *
+   * @param baseRing the base ring
+   * @param size the matrix size
+   * @return the matrix ring
+   */
+  public static <T, R extends Ring<T>> MatrixRing<T, R> dense(
+      R baseRing,
+      int size) {
+
+    return new MatrixRing<T, R>(
+        baseRing,
+        size,
+        new ArrayStorageFactory<T>());
+  }
+
+  /**
+   * Creates a ring of sparse {@code n x n} matrices over the given base ring.
+   *
+   * @param baseRing the base ring
+   * @param size the matrix size
+   * @return the matrix ring
+   */
+  public static <T, R extends Ring<T>> MatrixRing<T, R> sparse(
+      R baseRing,
+      int size) {
+
+    return new MatrixRing<T, R>(
+        baseRing,
+        size,
+        new SparseStorageFactory<T>());
+  }
+
+  MatrixRing(
       R baseRing,
       int size,
       StorageFactory<T> storageFactory) {
@@ -61,7 +95,7 @@ public class MatrixRing<T, R extends Ring<T>>
 
   @Override
   public Matrix<T, R> zero() {
-    return new MatrixImpl<T, R>(baseRing, size, size, storageFactory);
+    return Matrix.create(baseRing, size, size, storageFactory);
   }
 
   @Override
