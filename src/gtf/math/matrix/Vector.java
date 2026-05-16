@@ -3,7 +3,7 @@ package gtf.math.matrix;
 import gtf.math.algebra.Ring;
 
 /**
- * Convenience wrapper around an n x 1 matrix.
+ * Convenience wrapper around a 1 x n matrix.
  *
  * @author gtf
  *
@@ -18,9 +18,9 @@ public final class Vector<T, R extends Ring<T>> {
     if (matrix == null) {
       throw new NullPointerException("matrix");
     }
-    if (matrix.getCols() != 1) {
+    if (matrix.getRows() != 1) {
       throw new IllegalArgumentException(
-          "vector matrix must have exactly one column");
+          "vector matrix must have exactly one row");
     }
     this.matrix = matrix;
   }
@@ -37,7 +37,7 @@ public final class Vector<T, R extends Ring<T>> {
       int size) {
 
     return new Vector<T, R>(
-        Matrix.dense(ring, size, 1));
+        Matrix.dense(ring, 1, size));
   }
 
   /**
@@ -52,11 +52,11 @@ public final class Vector<T, R extends Ring<T>> {
       int size) {
 
     return new Vector<T, R>(
-        Matrix.sparse(ring, size, 1));
+        Matrix.sparse(ring, 1, size));
   }
 
   /**
-   * Wraps an existing n x 1 matrix as a vector.
+   * Wraps an existing 1 x n matrix as a vector.
    *
    * @param matrix the matrix
    * @return the vector wrapper
@@ -72,15 +72,15 @@ public final class Vector<T, R extends Ring<T>> {
   }
 
   public int size() {
-    return matrix.getRows();
+    return matrix.getCols();
   }
 
   public T get(int index) {
-    return matrix.getCell(index, 0);
+    return matrix.getCell(0, index);
   }
 
   public void set(int index, T value) {
-    matrix.setCell(index, 0, value);
+    matrix.setCell(0, index, value);
   }
 
   /**
@@ -98,13 +98,12 @@ public final class Vector<T, R extends Ring<T>> {
           "vector dimensions must match");
     }
 
-    return matrix.transpose()
-        .multiply(arg.matrix)
+    return matrix.multiply(arg.matrix.transpose())
         .getCell(0, 0);
   }
 
   /**
-   * Returns the underlying n x 1 matrix.
+   * Returns the underlying 1 x n matrix.
    *
    * @return the matrix representation
    */
