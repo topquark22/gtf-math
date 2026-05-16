@@ -1,4 +1,4 @@
-package gtf.math.stats;
+package gtf.math.stats.distribution;
 
 import static org.junit.Assert.assertEquals;
 
