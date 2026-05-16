@@ -2,7 +2,6 @@ package gtf.math.algebra.field;
 
 import java.math.BigInteger;
 
-import gtf.math.MillerRabin32;
 import gtf.math.algebra.Field;
 import gtf.math.algebra.ring.ZmodN;
 
@@ -15,9 +14,11 @@ import gtf.math.algebra.ring.ZmodN;
 public class ZmodP extends ZmodN implements Field<BigInteger> {
 
   /**
-   * Certainty for argument checking purposes only. For moduli too large
-   * for the deterministic 32-bit Miller-Rabin test, this is used as a
-   * fallback sanity check.
+   * Certainty for argument checking purposes only. If caller passes
+   * an order that is not prime, there is a 1 in a million chance
+   * that this won't be detected, which is extremely unlikely
+   * to cause a problem, considering that it is only a sanity
+   * check in the first place.
    */
   private static final int PRIME_CERTAINTY = 20;
   
@@ -25,7 +26,7 @@ public class ZmodP extends ZmodN implements Field<BigInteger> {
   
   public ZmodP(BigInteger order) {
     super(order);
-    if (!isPrime(order)) {
+    if (!order.isProbablePrime(PRIME_CERTAINTY)) {
       throw new IllegalArgumentException("order must be prime");
     }
     modulus = order;
@@ -54,12 +55,5 @@ public class ZmodP extends ZmodN implements Field<BigInteger> {
 
   public BigInteger neg(BigInteger arg) {
     return arg.negate().mod(modulus);
-  }
-
-  private static boolean isPrime(BigInteger n) {
-    if (n.bitLength() < Integer.SIZE) {
-      return MillerRabin32.miller_rabin_32(n.intValue());
-    }
-    return n.isProbablePrime(PRIME_CERTAINTY);
   }
 }
