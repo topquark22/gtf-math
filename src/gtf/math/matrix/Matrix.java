@@ -14,6 +14,66 @@ import gtf.math.algebra.Ring;
  */
 public interface Matrix<T, R extends Ring<T>> {
 
+  /**
+   * Creates a dense matrix backed by array storage.
+   *
+   * @param ring the ring over which the matrix entries are defined
+   * @param rows the number of rows
+   * @param cols the number of columns
+   * @return a dense matrix
+   */
+  static <T, R extends Ring<T>> Matrix<T, R> dense(
+      R ring,
+      int rows,
+      int cols) {
+
+    return new MatrixImpl<T, R>(
+        ring,
+        rows,
+        cols,
+        new ArrayStorageFactory<T>());
+  }
+
+  /**
+   * Creates a sparse matrix backed by sparse storage.
+   *
+   * @param ring the ring over which the matrix entries are defined
+   * @param rows the number of rows
+   * @param cols the number of columns
+   * @return a sparse matrix
+   */
+  static <T, R extends Ring<T>> Matrix<T, R> sparse(
+      R ring,
+      int rows,
+      int cols) {
+
+    return new SparseMatrix<T, R>(ring, rows, cols);
+  }
+
+  /**
+   * Creates a matrix with an explicitly supplied storage factory.
+   *
+   * <p>
+   * This is mainly useful for tests and specialized storage strategies.
+   * Most client code should use {@link #dense(Ring, int, int)} or
+   * {@link #sparse(Ring, int, int)}.
+   * </p>
+   *
+   * @param ring the ring over which the matrix entries are defined
+   * @param rows the number of rows
+   * @param cols the number of columns
+   * @param storageFactory the storage factory
+   * @return a matrix
+   */
+  static <T, R extends Ring<T>> Matrix<T, R> create(
+      R ring,
+      int rows,
+      int cols,
+      StorageFactory<T> storageFactory) {
+
+    return new MatrixImpl<T, R>(ring, rows, cols, storageFactory);
+  }
+
   R getRing();
 
   int getRows();
