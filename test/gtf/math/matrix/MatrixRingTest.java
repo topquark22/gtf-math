@@ -17,13 +17,11 @@ import gtf.math.algebra.field.Q;
 public class MatrixRingTest {
 
   private static final Q Q_FIELD = new Q();
-  private static final StorageFactory<BigFraction> STORAGE =
-      new ArrayStorageFactory<BigFraction>();
 
   @Test
   public void testZero() {
     MatrixRing<BigFraction, Q> ring =
-        new MatrixRing<BigFraction, Q>(Q_FIELD, 2, STORAGE);
+        MatrixRing.dense(Q_FIELD, 2);
 
     Matrix<BigFraction, Q> zero = ring.zero();
 
@@ -40,7 +38,7 @@ public class MatrixRingTest {
   @Test
   public void testIdentity() {
     MatrixRing<BigFraction, Q> ring =
-        new MatrixRing<BigFraction, Q>(Q_FIELD, 3, STORAGE);
+        MatrixRing.dense(Q_FIELD, 3);
 
     assertTrue(ring.id().isIdentity());
   }
@@ -48,7 +46,7 @@ public class MatrixRingTest {
   @Test
   public void testAdd() {
     MatrixRing<BigFraction, Q> ring =
-        new MatrixRing<BigFraction, Q>(Q_FIELD, 2, STORAGE);
+        MatrixRing.dense(Q_FIELD, 2);
 
     Matrix<BigFraction, Q> left = matrix(new long[][] {
         { 1, 2 },
@@ -71,7 +69,7 @@ public class MatrixRingTest {
   @Test
   public void testNeg() {
     MatrixRing<BigFraction, Q> ring =
-        new MatrixRing<BigFraction, Q>(Q_FIELD, 2, STORAGE);
+        MatrixRing.dense(Q_FIELD, 2);
 
     Matrix<BigFraction, Q> matrix = matrix(new long[][] {
         { 1, -2 },
@@ -89,7 +87,7 @@ public class MatrixRingTest {
   @Test
   public void testMultiply() {
     MatrixRing<BigFraction, Q> ring =
-        new MatrixRing<BigFraction, Q>(Q_FIELD, 2, STORAGE);
+        MatrixRing.dense(Q_FIELD, 2);
 
     Matrix<BigFraction, Q> left = matrix(new long[][] {
         { 1, 2 },
@@ -112,7 +110,7 @@ public class MatrixRingTest {
   @Test
   public void testDivideByIdentity() {
     MatrixRing<BigFraction, Q> ring =
-        new MatrixRing<BigFraction, Q>(Q_FIELD, 2, STORAGE);
+        MatrixRing.dense(Q_FIELD, 2);
 
     Matrix<BigFraction, Q> matrix = matrix(new long[][] {
         { 1, 2 },
@@ -125,7 +123,7 @@ public class MatrixRingTest {
   @Test
   public void testDivideByInvertibleMatrix() {
     MatrixRing<BigFraction, Q> ring =
-        new MatrixRing<BigFraction, Q>(Q_FIELD, 2, STORAGE);
+        MatrixRing.dense(Q_FIELD, 2);
 
     Matrix<BigFraction, Q> numerator = matrix(new long[][] {
         { 2, 0 },
@@ -148,7 +146,7 @@ public class MatrixRingTest {
   @Test(expected = ArithmeticException.class)
   public void testDivideRejectsSingularMatrix() {
     MatrixRing<BigFraction, Q> ring =
-        new MatrixRing<BigFraction, Q>(Q_FIELD, 2, STORAGE);
+        MatrixRing.dense(Q_FIELD, 2);
 
     ring.divide(
         matrix(new long[][] {
@@ -164,7 +162,7 @@ public class MatrixRingTest {
   @Test(expected = IllegalArgumentException.class)
   public void testRejectsWrongSizeMatrix() {
     MatrixRing<BigFraction, Q> ring =
-        new MatrixRing<BigFraction, Q>(Q_FIELD, 2, STORAGE);
+        MatrixRing.dense(Q_FIELD, 2);
 
     ring.add(
         matrix(new long[][] {
@@ -180,11 +178,10 @@ public class MatrixRingTest {
 
   private Matrix<BigFraction, Q> matrix(long[][] values) {
     Matrix<BigFraction, Q> matrix =
-        Matrix.create(
+        Matrix.dense(
             Q_FIELD,
             values.length,
-            values[0].length,
-            STORAGE);
+            values[0].length);
 
     for (int row = 0; row < values.length; row++) {
       for (int col = 0; col < values[row].length; col++) {
