@@ -180,7 +180,7 @@ public class MatrixRingTest {
 
   private Matrix<BigFraction, Q> matrix(long[][] values) {
     Matrix<BigFraction, Q> matrix =
-        new MatrixImpl<BigFraction, Q>(
+        Matrix.create(
             Q_FIELD,
             values.length,
             values[0].length,
