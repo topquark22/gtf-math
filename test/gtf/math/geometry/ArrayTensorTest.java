@@ -7,14 +7,14 @@ import java.util.Arrays;
 import org.junit.Test;
 
 import gtf.math.Permutation;
-import gtf.math.algebra.RealField;
+import gtf.math.algebra.field.R;
 import gtf.math.geometry.impl.ArrayTensor;
 
 public class ArrayTensorTest {
 
   @Test
   public void testScalarTensor() {
-    Tensor<Double, RealField> tensor = new ArrayTensor<Double, RealField>(
+    Tensor<Double, R> tensor = new ArrayTensor<Double, R>(
         EuclideanSpace.r3(), Arrays.asList(7.0));
 
     assertEquals(0, tensor.rank());
@@ -25,7 +25,7 @@ public class ArrayTensorTest {
 
   @Test
   public void testContravariantVector() {
-    Tensor<Double, RealField> tensor = new ArrayTensor<Double, RealField>(
+    Tensor<Double, R> tensor = new ArrayTensor<Double, R>(
         EuclideanSpace.r3(), Arrays.asList(1.0, 2.0, 3.0),
         TensorVariance.CONTRAVARIANT);
 
@@ -38,7 +38,7 @@ public class ArrayTensorTest {
 
   @Test
   public void testCovariantVector() {
-    Tensor<Double, RealField> tensor = new ArrayTensor<Double, RealField>(
+    Tensor<Double, R> tensor = new ArrayTensor<Double, R>(
         EuclideanSpace.r3(), Arrays.asList(4.0, 5.0, 6.0),
         TensorVariance.COVARIANT);
 
@@ -52,12 +52,12 @@ public class ArrayTensorTest {
   @Test
   public void testTensorProduct() {
     EuclideanSpace space = EuclideanSpace.r2();
-    Tensor<Double, RealField> vector = new ArrayTensor<Double, RealField>(
+    Tensor<Double, R> vector = new ArrayTensor<Double, R>(
         space, Arrays.asList(1.0, 2.0), TensorVariance.CONTRAVARIANT);
-    Tensor<Double, RealField> covector = new ArrayTensor<Double, RealField>(
+    Tensor<Double, R> covector = new ArrayTensor<Double, R>(
         space, Arrays.asList(3.0, 4.0), TensorVariance.COVARIANT);
 
-    Tensor<Double, RealField> product = vector.tensorProduct(covector);
+    Tensor<Double, R> product = vector.tensorProduct(covector);
 
     assertEquals(2, product.rank());
     assertEquals(TensorVariance.CONTRAVARIANT, product.variance(0));
@@ -71,11 +71,11 @@ public class ArrayTensorTest {
   @Test
   public void testPermutation() {
     EuclideanSpace space = EuclideanSpace.r2();
-    Tensor<Double, RealField> tensor = new ArrayTensor<Double, RealField>(
+    Tensor<Double, R> tensor = new ArrayTensor<Double, R>(
         space, Arrays.asList(1.0, 2.0, 3.0, 4.0),
         TensorVariance.CONTRAVARIANT, TensorVariance.COVARIANT);
 
-    Tensor<Double, RealField> result = tensor.permute(new Permutation(1, 0));
+    Tensor<Double, R> result = tensor.permute(new Permutation(1, 0));
 
     assertEquals(TensorVariance.COVARIANT, result.variance(0));
     assertEquals(TensorVariance.CONTRAVARIANT, result.variance(1));
@@ -88,12 +88,12 @@ public class ArrayTensorTest {
   @Test
   public void testContraction() {
     EuclideanSpace space = EuclideanSpace.r2();
-    Tensor<Double, RealField> vector = new ArrayTensor<Double, RealField>(
+    Tensor<Double, R> vector = new ArrayTensor<Double, R>(
         space, Arrays.asList(1.0, 2.0), TensorVariance.CONTRAVARIANT);
-    Tensor<Double, RealField> covector = new ArrayTensor<Double, RealField>(
+    Tensor<Double, R> covector = new ArrayTensor<Double, R>(
         space, Arrays.asList(3.0, 4.0), TensorVariance.COVARIANT);
 
-    Tensor<Double, RealField> contracted =
+    Tensor<Double, R> contracted =
         vector.tensorProduct(covector).contract(0, 1);
 
     assertEquals(0, contracted.rank());
