@@ -8,7 +8,7 @@ package gtf.math.matrix;
  *
  * @param <T> the type of the matrix elements
  */
-public class SparseStorageFactory<T> implements StorageFactory<T> {
+class SparseStorageFactory<T> implements StorageFactory<T> {
 
   @Override
   public StorageModel<T> createStorage(int rows, int cols, T zero) {
