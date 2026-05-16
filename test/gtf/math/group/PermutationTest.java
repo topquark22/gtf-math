@@ -7,7 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import gtf.math.group.Permutation;
+import gtf.math.Permutation;
 
 /**
  * @author gtf
