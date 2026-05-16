@@ -20,20 +20,36 @@ public class PolynomialRing<T, F extends Field<T>>
     implements Ring<Polynomial<T>> {
 
   private final F field;
+  private final PolynomialStorageFactory<T> storageFactory;
 
   public PolynomialRing(F field) {
+    this(field, new ArrayPolynomialStorageFactory<T>());
+  }
+
+  public PolynomialRing(F field,
+                        PolynomialStorageFactory<T> storageFactory) {
     if (field == null) {
       throw new NullPointerException("field");
     }
+    if (storageFactory == null) {
+      throw new NullPointerException("storageFactory");
+    }
     this.field = field;
+    this.storageFactory = storageFactory;
   }
 
   public F field() {
     return field;
   }
 
+  public PolynomialStorageFactory<T> storageFactory() {
+    return storageFactory;
+  }
+
   public Polynomial<T> polynomial(List<T> coefficients) {
-    return new Polynomial<T>(coefficients, field.zero());
+    return new Polynomial<T>(coefficients,
+        field.zero(),
+        storageFactory);
   }
 
   @SafeVarargs
