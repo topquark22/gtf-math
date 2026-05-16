@@ -50,7 +50,7 @@ public class PolynomialFractionFieldTest {
         fraction(poly(1, -1), poly(1, 0, 1));
 
     Fraction<Polynomial<BigFraction>> expected =
-        fraction(poly(1, 0, -1), poly(1, 0, 0, 0, -1));
+        fraction(poly(1, 0, -1), poly(1, -1, 1, -1));
 
     assertEquals(expected, QX_FRACTIONS.mul(left, right));
   }
