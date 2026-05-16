@@ -1,7 +1,7 @@
-package gtf.math.algebra.impl;
+package gtf.math.geometry.impl;
 
 import gtf.math.algebra.Field;
-import gtf.math.algebra.FiniteDimensionalVectorSpace;
+import gtf.math.geometry.FiniteDimensionalVectorSpace;
 import gtf.math.types.Pair;
 
 
