@@ -1,8 +1,8 @@
 package gtf.math.geometry;
 
-import gtf.math.Permutation;
 import gtf.math.algebra.Field;
 import gtf.math.algebra.FiniteDimensionalVectorSpace;
+import gtf.math.group.Permutation;
 
 
 /**
