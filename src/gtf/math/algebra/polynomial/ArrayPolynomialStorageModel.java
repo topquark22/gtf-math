@@ -2,6 +2,7 @@ package gtf.math.algebra.polynomial;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 
 /**
@@ -55,5 +56,33 @@ class ArrayPolynomialStorageModel<T>
       }
     }
     return -1;
+  }
+
+  @Override
+  public PolynomialTermIterator<T> iterator() {
+    return new PolynomialTermIterator<T>() {
+      private int nextDegree = nextDegree(-1);
+
+      @Override
+      public boolean hasNext() {
+        return nextDegree >= 0;
+      }
+
+      @Override
+      public PolynomialTerm<T> next() {
+        if (!hasNext()) {
+          throw new NoSuchElementException();
+        }
+        int degree = nextDegree;
+        T coefficient = coefficient(degree);
+        nextDegree = nextDegree(degree);
+        return new PolynomialTerm<T>(degree, coefficient);
+      }
+
+      @Override
+      public void remove() {
+        throw new UnsupportedOperationException();
+      }
+    };
   }
 }
