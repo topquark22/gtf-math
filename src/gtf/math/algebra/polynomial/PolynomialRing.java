@@ -120,6 +120,26 @@ public class PolynomialRing<T, F extends Field<T>>
     return this.polynomial(coefficients);
   }
 
+  public Polynomial<T> monic(Polynomial<T> polynomial) {
+    if (polynomial.isZero()) {
+      return polynomial;
+    }
+    return scalarMultiply(field.inv(polynomial.leadingCoefficient()), polynomial);
+  }
+
+  public Polynomial<T> gcd(Polynomial<T> left, Polynomial<T> right) {
+    Polynomial<T> a = left;
+    Polynomial<T> b = right;
+
+    while (!b.isZero()) {
+      Polynomial<T>[] result = divideAndRemainder(a, b);
+      a = b;
+      b = result[1];
+    }
+
+    return monic(a);
+  }
+
   public Polynomial<T>[] divideAndRemainder(Polynomial<T> numerator,
                                             Polynomial<T> denominator) {
     if (denominator.isZero()) {
