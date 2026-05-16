@@ -6,9 +6,9 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
+import gtf.math.Permutation;
 import gtf.math.algebra.field.R;
 import gtf.math.geometry.impl.ArrayTensor;
-import gtf.math.group.Permutation;
 
 public class ArrayTensorTest {
 

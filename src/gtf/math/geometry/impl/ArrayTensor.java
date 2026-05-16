@@ -5,11 +5,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import gtf.math.Permutation;
 import gtf.math.algebra.Field;
 import gtf.math.algebra.FiniteDimensionalVectorSpace;
 import gtf.math.geometry.Tensor;
 import gtf.math.geometry.TensorVariance;
-import gtf.math.group.Permutation;
 
 
 /**
