@@ -20,61 +20,63 @@ import java.util.List;
  */
 public final class Polynomial<T> {
 
-  private final List<T> coefficients;
+  private final PolynomialStorageModel<T> storage;
   private final T zero;
 
-  Polynomial(List<T> coefficients, T zero) {
+  Polynomial(List<T> coefficients, T zero,
+      PolynomialStorageFactory<T> storageFactory) {
     if (coefficients == null) {
       throw new NullPointerException("coefficients");
     }
     if (zero == null) {
       throw new NullPointerException("zero");
     }
-
-    int degree = coefficients.size() - 1;
-    while (degree >= 0 && zero.equals(coefficients.get(degree))) {
-      degree--;
+    if (storageFactory == null) {
+      throw new NullPointerException("storageFactory");
     }
 
-    List<T> copy = new ArrayList<T>();
-    for (int i = 0; i <= degree; i++) {
-      T coefficient = coefficients.get(i);
-      if (coefficient == null) {
+    for (int i = 0; i < coefficients.size(); i++) {
+      if (coefficients.get(i) == null) {
         throw new NullPointerException("coefficient " + i);
       }
-      copy.add(coefficient);
     }
-    this.coefficients = Collections.unmodifiableList(copy);
+
     this.zero = zero;
+    this.storage = storageFactory.createStorage(coefficients, zero);
   }
 
   public int degree() {
-    return coefficients.size() - 1;
+    return storage.degree();
   }
 
   public boolean isZero() {
-    return coefficients.isEmpty();
+    return degree() < 0;
   }
 
   public T coefficient(int degree) {
     if (degree < 0) {
       throw new IllegalArgumentException("degree must be non-negative");
     }
-    if (degree >= coefficients.size()) {
-      return zero;
-    }
-    return coefficients.get(degree);
+    return storage.coefficient(degree);
   }
 
   public T leadingCoefficient() {
     if (isZero()) {
       return zero;
     }
-    return coefficients.get(coefficients.size() - 1);
+    return coefficient(degree());
+  }
+
+  public int nextDegree(int degree) {
+    return storage.nextDegree(degree);
   }
 
   public List<T> coefficients() {
-    return coefficients;
+    List<T> coefficients = new ArrayList<T>(degree() + 1);
+    for (int i = 0; i <= degree(); i++) {
+      coefficients.add(coefficient(i));
+    }
+    return Collections.unmodifiableList(coefficients);
   }
 
   @Override
@@ -86,12 +88,12 @@ public final class Polynomial<T> {
       return false;
     }
     Polynomial<?> other = (Polynomial<?>) obj;
-    return coefficients.equals(other.coefficients);
+    return coefficients().equals(other.coefficients());
   }
 
   @Override
   public int hashCode() {
-    return coefficients.hashCode();
+    return coefficients().hashCode();
   }
 
   @Override
@@ -100,8 +102,8 @@ public final class Polynomial<T> {
       return "0";
     }
     StringBuilder builder = new StringBuilder();
-    for (int i = coefficients.size() - 1; i >= 0; i--) {
-      T coefficient = coefficients.get(i);
+    for (int i = degree(); i >= 0; i--) {
+      T coefficient = coefficient(i);
       if (zero.equals(coefficient)) {
         continue;
       }
