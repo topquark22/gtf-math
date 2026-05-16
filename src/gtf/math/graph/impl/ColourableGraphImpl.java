@@ -157,8 +157,8 @@ public class ColourableGraphImpl<T, V>
    */
   public Collection<V> getPossibleColoursForNode(T node) {
     if (getColour(node) != null) {
--     throw new IllegalStateException("The node " + node.toString() +
--         " is already coloured. You should not be able to get here.");
+      throw new IllegalStateException("The node " + node.toString() +
+          " is already coloured. You should not be able to get here.");
     }
     if (constraint == null) {
       return allColours;
