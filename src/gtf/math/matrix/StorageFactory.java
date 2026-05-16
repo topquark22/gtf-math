@@ -7,7 +7,7 @@ package gtf.math.matrix;
  *
  * @param <T> the type of the matrix elements
  */
-public interface StorageFactory<T> {
+interface StorageFactory<T> {
   
   /**
    * Allocates storage for matrix elements.
