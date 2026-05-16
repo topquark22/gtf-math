@@ -21,6 +21,10 @@ public class ZmodN implements Ring<BigInteger> {
     modulus = order;
   }
 
+  protected BigInteger modulus() {
+    return modulus;
+  }
+
   //@Override
   public BigInteger mul(BigInteger arg1, BigInteger arg2) {
     // TODO efficient modular multiplication using bit shift
