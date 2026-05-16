@@ -1,5 +1,7 @@
-package gtf.math.algebra;
+package gtf.math.geometry;
 
+import gtf.math.algebra.Field;
+import gtf.math.algebra.Module;
 
 /**
  * A vector space over a field.

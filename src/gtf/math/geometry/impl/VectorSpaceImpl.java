@@ -1,4 +1,4 @@
-package gtf.math.algebra.impl;
+package gtf.math.geometry.impl;
 
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
@@ -6,7 +6,7 @@ import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import gtf.math.algebra.Field;
-import gtf.math.algebra.VectorSpace;
+import gtf.math.geometry.VectorSpace;
 
 /**
  * Generic implementation of a vector space over a field.

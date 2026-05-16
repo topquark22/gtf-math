@@ -1,5 +1,6 @@
-package gtf.math.algebra;
+package gtf.math.geometry;
 
+import gtf.math.algebra.Field;
 
 /**
  * A coordinate vector over a field.
