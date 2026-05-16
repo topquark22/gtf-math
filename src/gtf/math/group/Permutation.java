@@ -1,4 +1,4 @@
-package gtf.math;
+package gtf.math.group;
 
 import java.util.Arrays;
 
