@@ -11,7 +11,7 @@ import gtf.math.algebra.polynomial.PolynomialRing;
 
 
 /**
- * Tests formal fractions of polynomials over Q.
+ * Tests reduced rational functions over Q.
  *
  * @author gtf
  */
@@ -22,10 +22,9 @@ public class PolynomialFractionFieldTest {
   private static final PolynomialRing<BigFraction, Q> QX =
       new PolynomialRing<BigFraction, Q>(Q_FIELD);
 
-  private static final FractionField<Polynomial<BigFraction>,
-      PolynomialRing<BigFraction, Q>> QX_FRACTIONS =
-          new FractionField<Polynomial<BigFraction>,
-              PolynomialRing<BigFraction, Q>>(QX);
+  private static final PolynomialFractionField<BigFraction, Q>
+      QX_FRACTIONS =
+          new PolynomialFractionField<BigFraction, Q>(QX);
 
   @Test
   public void testAddPolynomialFractions() {
@@ -50,7 +49,7 @@ public class PolynomialFractionFieldTest {
         fraction(poly(1, -1), poly(1, 0, 1));
 
     Fraction<Polynomial<BigFraction>> expected =
-        fraction(poly(1, 0, -1), poly(1, -1, 1, -1));
+        fraction(poly(1), poly(1, 0, 1));
 
     assertEquals(expected, QX_FRACTIONS.mul(left, right));
   }
@@ -64,6 +63,17 @@ public class PolynomialFractionFieldTest {
         fraction(poly(1, -1), poly(1, 1));
 
     assertEquals(expected, QX_FRACTIONS.inv(value));
+  }
+
+  @Test
+  public void testAutomaticReduction() {
+    Fraction<Polynomial<BigFraction>> value =
+        fraction(poly(-1, 0, 1), poly(-1, 1));
+
+    Fraction<Polynomial<BigFraction>> expected =
+        fraction(poly(1, 1), poly(1));
+
+    assertEquals(expected, value);
   }
 
   @Test(expected = ArithmeticException.class)
