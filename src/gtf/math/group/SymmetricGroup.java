@@ -12,6 +12,13 @@ import gtf.math.Permutation;
  * {@code arg2}.
  * </p>
  *
+ * <p>
+ * Since this library models groups operationally rather than as explicit
+ * stored sets of elements, this implementation also provides the group
+ * operations for any subgroup of {@code S_n}, such as alternating groups,
+ * provided the caller restricts usage to subgroup elements.
+ * </p>
+ *
  * @author gtf
  */
 public class SymmetricGroup implements Group<Permutation> {
