@@ -34,4 +34,11 @@ interface PolynomialStorageModel<T> {
    * @return the next stored degree, or -1 if none exists
    */
   int nextDegree(int degree);
+
+  /**
+   * Returns an iterator over nonzero polynomial terms.
+   *
+   * @return the iterator
+   */
+  PolynomialTermIterator<T> iterator();
 }
