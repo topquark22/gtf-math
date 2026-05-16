@@ -50,6 +50,18 @@ public class PolynomialRingTest {
     assertEquals(RING.zero(), result[1]);
   }
 
+  @Test
+  public void testGcd() {
+    Polynomial<BigFraction> left =
+        polynomial(-1, 0, 1);
+
+    Polynomial<BigFraction> right =
+        polynomial(-1, 1);
+
+    assertEquals(polynomial(-1, 1),
+        RING.gcd(left, right));
+  }
+
   private Polynomial<BigFraction> polynomial(long... coefficients) {
     BigFraction[] values = new BigFraction[coefficients.length];
     for (int i = 0; i < coefficients.length; i++) {
