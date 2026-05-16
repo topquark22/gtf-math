@@ -80,7 +80,16 @@ public class MatrixRing<T, R extends Ring<T>>
     validate(arg1);
     validate(arg2);
 
-    return arg1.add(arg2);
+    Matrix<T, R> result = zero();
+
+    for (int row = 0; row < size; row++) {
+      for (int col = 0; col < size; col++) {
+        result.setCell(row, col,
+            baseRing.add(arg1.getCell(row, col), arg2.getCell(row, col)));
+      }
+    }
+
+    return result;
   }
 
   @Override
