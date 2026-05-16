@@ -47,7 +47,11 @@ public interface Matrix<T, R extends Ring<T>> {
       int rows,
       int cols) {
 
-    return new SparseMatrix<T, R>(ring, rows, cols);
+    return new MatrixImpl<T, R>(
+        ring,
+        rows,
+        cols,
+        new SparseStorageFactory<T>());
   }
 
   /**
