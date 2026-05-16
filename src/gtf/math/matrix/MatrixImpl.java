@@ -13,7 +13,7 @@ import gtf.math.algebra.Ring;
  * @param <T> The type of the matrix elements
  * @param <R> the ring over which the elements are defined
  */
-public class MatrixImpl<T, R extends Ring<T>> implements Matrix<T, R> {
+class MatrixImpl<T, R extends Ring<T>> implements Matrix<T, R> {
 
   private final R ring;
   protected final StorageFactory<T> storageFactory;
