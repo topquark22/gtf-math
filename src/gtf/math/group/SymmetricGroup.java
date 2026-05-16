@@ -25,8 +25,8 @@ public class SymmetricGroup implements Group<Permutation> {
    * @param size the number of letters permuted
    */
   public SymmetricGroup(int size) {
-    if (size < 0) {
-      throw new IllegalArgumentException("size must be non-negative");
+    if (size <= 0) {
+      throw new IllegalArgumentException("size must be positive");
     }
 
     this.size = size;
