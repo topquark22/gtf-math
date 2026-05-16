@@ -29,6 +29,10 @@ public class FractionField<T, R extends Ring<T>>
     this.ring = ring;
   }
 
+  protected R baseRing() {
+    return ring;
+  }
+
   public Fraction<T> fraction(T numerator, T denominator) {
     if (denominator.equals(ring.zero())) {
       throw new ArithmeticException("division by zero");
