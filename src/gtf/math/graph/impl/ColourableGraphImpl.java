@@ -2,7 +2,6 @@ package gtf.math.graph.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -157,9 +156,9 @@ public class ColourableGraphImpl<T, V>
    * @see gtf.math.graph.ColourableGraph#getPossibleColoursForNode(java.lang.Object)
    */
   public Collection<V> getPossibleColoursForNode(T node) {
-    V existingColour = getColour(node);
-    if (existingColour != null) {
-      return Collections.singleton(existingColour);
+    if (getColour(node) != null) {
+-     throw new IllegalStateException("The node " + node.toString() +
+-         " is already coloured. You should not be able to get here.");
     }
     if (constraint == null) {
       return allColours;
