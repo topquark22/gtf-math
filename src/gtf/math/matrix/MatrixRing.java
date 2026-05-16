@@ -23,52 +23,24 @@ public class MatrixRing<T, R extends Ring<T>>
 
   private final R baseRing;
   private final int size;
-  private final StorageFactory<T> storageFactory;
 
   /**
-   * Creates a ring of dense {@code n x n} matrices over the given base ring.
+   * Creates the ring of {@code n x n} matrices over the given base ring.
    *
    * @param baseRing the base ring
    * @param size the matrix size
    * @return the matrix ring
    */
-  public static <T, R extends Ring<T>> MatrixRing<T, R> dense(
+  public static <T, R extends Ring<T>> MatrixRing<T, R> of(
       R baseRing,
       int size) {
 
-    return new MatrixRing<T, R>(
-        baseRing,
-        size,
-        new ArrayStorageFactory<T>());
+    return new MatrixRing<T, R>(baseRing, size);
   }
 
-  /**
-   * Creates a ring of sparse {@code n x n} matrices over the given base ring.
-   *
-   * @param baseRing the base ring
-   * @param size the matrix size
-   * @return the matrix ring
-   */
-  public static <T, R extends Ring<T>> MatrixRing<T, R> sparse(
-      R baseRing,
-      int size) {
-
-    return new MatrixRing<T, R>(
-        baseRing,
-        size,
-        new SparseStorageFactory<T>());
-  }
-
-  MatrixRing(
-      R baseRing,
-      int size,
-      StorageFactory<T> storageFactory) {
-
+  public MatrixRing(R baseRing, int size) {
     if (baseRing == null) {
       throw new NullPointerException("baseRing");
-    }
-    if (storageFactory == null) {
-      throw new NullPointerException("storageFactory");
     }
     if (size < 0) {
       throw new IllegalArgumentException("size must be non-negative");
@@ -76,7 +48,6 @@ public class MatrixRing<T, R extends Ring<T>>
 
     this.baseRing = baseRing;
     this.size = size;
-    this.storageFactory = storageFactory;
   }
 
   /**
@@ -95,7 +66,7 @@ public class MatrixRing<T, R extends Ring<T>>
 
   @Override
   public Matrix<T, R> zero() {
-    return Matrix.create(baseRing, size, size, storageFactory);
+    return Matrix.dense(baseRing, size, size);
   }
 
   @Override
