@@ -1,6 +1,8 @@
 package gtf.math.algebra.polynomial;
 
+import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.TreeMap;
 
 
@@ -46,5 +48,33 @@ class SparsePolynomialStorageModel<T>
       return entry.getKey();
     }
     return -1;
+  }
+
+  @Override
+  public PolynomialTermIterator<T> iterator() {
+    return new PolynomialTermIterator<T>() {
+
+      private final Iterator<Map.Entry<Integer, T>> iterator =
+          coefficients.entrySet().iterator();
+
+      @Override
+      public boolean hasNext() {
+        return iterator.hasNext();
+      }
+
+      @Override
+      public PolynomialTerm<T> next() {
+        if (!hasNext()) {
+          throw new NoSuchElementException();
+        }
+        Map.Entry<Integer, T> entry = iterator.next();
+        return new PolynomialTerm<T>(entry.getKey(), entry.getValue());
+      }
+
+      @Override
+      public void remove() {
+        throw new UnsupportedOperationException();
+      }
+    };
   }
 }
