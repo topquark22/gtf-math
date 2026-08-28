@@ -17,7 +17,7 @@ A lightweight Java mathematics, abstract algebra, linear algebra, and geometry f
 
 The goal of the project is not merely to provide numerical helper functions, but to build a coherent algebraic framework capable of representing and composing structures such as rings, fields, modules, vector spaces, matrices, tensors, and geometric algebras.
 
-The library is intentionally designed around immutable mathematical objects wherever practical.
+The library is intentionally designed around immutable mathematical objects wherever practical. 
 
 ---
 
@@ -257,10 +257,14 @@ ant javadoc
 
 MIT License.
 
-See `LICENSE` for details.
+See `LICENSE.md` for details.
 
 ---
 
 ## Author
 
 Geoffrey T. Falk
+
+I am in no means satisfied with this content. 
+It will evolve. Note written August 27, 2026.
+
