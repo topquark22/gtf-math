@@ -10,7 +10,7 @@ package gtf.math.algebra;
  * equals(), hashCode() methods.
  * 
  * Note: There should be a way to refer to its own type, say
- * "public interface Ring<T> extends Module<T, T, self>"
+ * "public interface Ring&lt;T&gt; extends Module&lt;T, T, self&gt;"
  * 
  * @author gtf
  */

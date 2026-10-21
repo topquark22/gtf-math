@@ -82,7 +82,7 @@ The library is intentionally designed around immutable mathematical objects wher
 ### Utility Infrastructure
 
 - general-purpose utility classes
-- Apache Ant build system
+- Apache Maven build system
 - Javadoc generation
 - JUnit 4 test support
 - package-filtered test execution
@@ -204,52 +204,48 @@ The contraction above computes:
 
 ## Building
 
-The project currently uses Apache Ant.
+The project uses Apache Maven with the standard layout (`src/main/java`, `src/test/java`).
 
 ### Compile
 
 ```bash
-ant compile
+mvn compile
 ```
 
 ### Run Tests
 
 ```bash
-ant test
+mvn test
 ```
 
-Tests use JUnit 4. Place JUnit jars in `lib/`, for example:
+Tests use JUnit 4, which Maven downloads automatically.
 
-```text
-lib/junit-4.13.2.jar
-lib/hamcrest-core-1.3.jar
-```
-
-To run only tests under a specific package, use `test.package` with slash-separated package paths:
+To run only tests under a specific package:
 
 ```bash
-ant test -Dtest.package=gtf/math/geometry
+mvn test -Dtest='gtf.math.geometry.*'
 ```
 
 ### Build JAR
 
 ```bash
-ant jar
+mvn package
 ```
+
+This produces `target/gtf-math.jar` and also generates Javadocs in `target/reports/apidocs`.
 
 ### Generate Javadocs
 
 ```bash
-ant javadoc
+mvn javadoc:javadoc
 ```
 
 ---
 
 ## Requirements
 
-- Java 8 or later
-- Apache Ant
-- JUnit 4 for running tests
+- Java 8 or later (the library is compiled with `--release 8`; building requires JDK 8+)
+- Apache Maven 3.6.3 or later
 
 ---
 

@@ -10,7 +10,7 @@ import java.util.Collection;
  * @author gtf
  *
  * @param <T> The type used for the node addresses
- * @param <C> The type used for the node values
+ * @param <V> The type used for the node values
  */
 public interface ColourAdjacencyGraph<T, V> extends ColourableGraph<T, V> {
 
