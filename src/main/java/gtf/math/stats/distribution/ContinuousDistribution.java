@@ -19,7 +19,7 @@ public interface ContinuousDistribution {
    * Evaluates the cumulative distribution function.
    *
    * @param x the evaluation point
-   * @return P(X <= x)
+   * @return P(X &lt;= x)
    */
   double cumulative(double x);
 }

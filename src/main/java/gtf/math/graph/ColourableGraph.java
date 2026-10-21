@@ -14,7 +14,7 @@ import java.util.Collection;
  *
  * @param <T> The type used for the node addresses. Must implement
  * a meaningful equals() and hashCode().
- * @param <C> The type used for the node values. Must implement
+ * @param <V> The type used for the node values. Must implement
  * a meaningful equals() method.
  */
 public interface ColourableGraph<T, V> extends Copyable<ColourableGraph<T, V>> {

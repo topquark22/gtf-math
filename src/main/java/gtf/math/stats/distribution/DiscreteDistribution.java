@@ -19,7 +19,7 @@ public interface DiscreteDistribution {
    * Evaluates the cumulative distribution function.
    *
    * @param k discrete value
-   * @return P(X <= k)
+   * @return P(X &lt;= k)
    */
   double cumulative(int k);
 }

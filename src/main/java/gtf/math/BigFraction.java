@@ -67,7 +67,7 @@ public final class BigFraction extends Number implements Comparable<BigFraction>
   /**
    * Constructor that takes a string representation of the BigFraction.
    * The representation must be of the form: biginteger <b>or</b>
-   * <i>biginteger</i> / </i>biginteger</i>, where <i>biginteger</i>
+   * <i>biginteger</i> / <i>biginteger</i>, where <i>biginteger</i>
    * represents a string that can be parsed into a BigInteger.
    * Whitespace is ignored.
    *
@@ -315,7 +315,7 @@ public final class BigFraction extends Number implements Comparable<BigFraction>
 
   /**
    * Parses a string representation of the BigFraction. The representation
-   * must be of the form: biginteger <b>or</b> <i>biginteger</i> / </i>biginteger</i>,
+   * must be of the form: biginteger <b>or</b> <i>biginteger</i> / <i>biginteger</i>,
    * where <i>biginteger</i> represents a string that can be parsed into a
    * BigInteger. Whitespace is ignored.
    *

@@ -56,7 +56,7 @@ public final class PoissonDistribution implements DiscreteDistribution {
    * Returns the cumulative distribution function.
    *
    * @param k nonnegative integer
-   * @return P(X <= k)
+   * @return P(X &lt;= k)
    */
   public double cumulative(int k) {
     if (k < 0) {
